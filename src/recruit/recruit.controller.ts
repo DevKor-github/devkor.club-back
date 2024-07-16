@@ -5,7 +5,7 @@ import type {
   FrontendApplyRequestDto,
   PmApplyRequestDto,
 } from "./dto";
-import type { RecruitService } from "./recruit.service";
+import { RecruitService } from "./recruit.service";
 
 @Controller("recruit")
 export class RecruitController {
