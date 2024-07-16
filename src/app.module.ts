@@ -18,7 +18,6 @@ import { S3Module } from "./s3/s3.module";
       database: process.env.DB_DATABASE,
       autoLoadEntities: true,
       logging: true,
-      synchronize: true,
     }),
     RecruitModule,
     S3Module,

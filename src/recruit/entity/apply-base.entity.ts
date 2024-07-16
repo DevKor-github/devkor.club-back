@@ -1,4 +1,4 @@
-import { Column,  PrimaryGeneratedColumn } from "typeorm";
+import { Column, PrimaryGeneratedColumn } from "typeorm";
 import type { ApplyBaseDto } from "../dto/applyBase.dto";
 
 export abstract class ApplyBase {
@@ -27,12 +27,14 @@ export abstract class ApplyBase {
   @Column({ name: "interview_time" })
   interviewTime!: number;
 
-  constructor(dto: ApplyBaseDto) {
-    this.name = dto.name;
-    this.email = dto.email;
-    this.phone = dto.phone;
-    this.major = dto.major;
-    this.studentId = dto.studentId;
-    this.interviewTime = dto.interviewTime;
+  constructor(dto?: ApplyBaseDto) {
+    if (dto) {
+      this.name = dto.name;
+      this.email = dto.email;
+      this.phone = dto.phone;
+      this.major = dto.major;
+      this.studentId = dto.studentId;
+      this.interviewTime = dto.interviewTime;
+    }
   }
 }

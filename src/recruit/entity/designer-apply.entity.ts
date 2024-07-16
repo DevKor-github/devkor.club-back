@@ -43,9 +43,23 @@ export class DesignerApplyEntity extends ApplyBase {
     type: "text",
   })
   answer7?: string;
-  constructor(dto: DesignerApplyRequestDto) {
+  constructor(dto?: DesignerApplyRequestDto) {
     super(dto);
-
+    if (!dto)
+      dto = {
+        answer1: "",
+        answer2: "",
+        answer3: "",
+        answer4: "",
+        answer5: "",
+        answer6: "",
+        name: "",
+        email: "",
+        phone: "",
+        major: "",
+        studentId: "2020320094",
+        interviewTime: 3,
+      };
     this.answer1 = dto.answer1;
     this.answer2 = dto.answer2;
     this.answer3 = dto.answer3;
