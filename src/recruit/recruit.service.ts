@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import axios from "axios";
-import type { Repository } from "typeorm";
-import type {
+import  { Repository } from "typeorm";
+import  {
   BackendApplyRequestDto,
   DesignerApplyRequestDto,
   FrontendApplyRequestDto,

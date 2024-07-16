@@ -1,5 +1,5 @@
 import { Column, Entity } from "typeorm";
-import type { DesignerApplyRequestDto } from "../dto";
+import  { DesignerApplyRequestDto } from "../dto";
 import { ApplyBase } from "./apply-base.entity";
 
 @Entity("designer_apply")

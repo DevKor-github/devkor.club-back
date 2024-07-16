@@ -1,5 +1,5 @@
 import { Column, Entity } from "typeorm";
-import type { FrontendApplyRequestDto } from "../dto";
+import  { FrontendApplyRequestDto } from "../dto";
 import { ApplyBase } from "./apply-base.entity";
 
 @Entity("front_apply")

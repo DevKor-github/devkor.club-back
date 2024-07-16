@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import type {
+import {
   BackendApplyRequestDto,
   DesignerApplyRequestDto,
   FrontendApplyRequestDto,

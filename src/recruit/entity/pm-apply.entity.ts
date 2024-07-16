@@ -1,5 +1,5 @@
 import { Column, Entity } from "typeorm";
-import type { PmApplyRequestDto } from "../dto";
+import  { PmApplyRequestDto } from "../dto";
 import { ApplyBase } from "./apply-base.entity";
 
 @Entity("pm_apply")

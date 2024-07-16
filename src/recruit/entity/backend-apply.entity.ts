@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import type { BackendApplyRequestDto } from "../dto";
+import  { BackendApplyRequestDto } from "../dto";
 import { ApplyBase } from "./apply-base.entity";
 
 @Entity("backend_apply")

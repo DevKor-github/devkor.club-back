@@ -1,5 +1,5 @@
 import { Column, PrimaryGeneratedColumn } from "typeorm";
-import type { ApplyBaseDto } from "../dto/applyBase.dto";
+import  { ApplyBaseDto } from "../dto/applyBase.dto";
 
 export abstract class ApplyBase {
   @PrimaryGeneratedColumn({ name: "id" })
