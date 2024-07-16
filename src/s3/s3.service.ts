@@ -1,10 +1,12 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotAcceptableException } from "@nestjs/common";
 import * as AWS from "aws-sdk";
 
 @Injectable()
 export class S3Service {
   async upload(file: Express.Multer.File) {
     const fileExtension = file.originalname.split(".").pop();
+    if (fileExtension.toLowerCase() !== "pdf")
+      throw new NotAcceptableException("must be pdf");
     const albumBucketName = process.env.AWS_BUCKET_NAME; // S3의 버킷 이름
     const region = process.env.AWS_REGION; // 서울
     const accessKeyId = process.env.AWS_ACCESS_KEY; // IAM에서 생성한 사용자의 accessKeyId
