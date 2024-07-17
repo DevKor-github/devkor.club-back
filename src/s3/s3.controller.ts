@@ -19,7 +19,7 @@ export class S3Controller {
     */
 
   @Get("/presigned-url")
-  async getPresignedUrl(fileName: string) {
-    return await this.s3Service.getPresignedUrl("fileName");
+  async getPresignedUrl() {
+    return await this.s3Service.getPresignedUrl();
   }
 }
