@@ -2,6 +2,7 @@ import { IsPhoneNumber } from "@/util/IsPhoneNumber.decorator";
 import {
   IsEmail,
   IsInt,
+  IsNumberString,
   IsString,
   Length,
   MinLength,
@@ -25,7 +26,6 @@ export abstract class ApplyBaseDto {
   @Length(10, 10)
   studentId!: string;
 
-  @IsInt()
+  @IsNumberString()
   interviewTime!: number;
 }
-
