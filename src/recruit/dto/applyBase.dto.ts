@@ -26,6 +26,6 @@ export abstract class ApplyBaseDto {
   @Length(10, 10)
   studentId!: string;
 
-  @IsNumberString()
+  @IsInt()
   interviewTime!: number;
 }
