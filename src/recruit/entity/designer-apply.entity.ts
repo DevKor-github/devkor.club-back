@@ -1,5 +1,5 @@
 import { Column, Entity } from "typeorm";
-import  { DesignerApplyRequestDto } from "../dto";
+import { DesignerApplyRequestDto } from "../dto";
 import { ApplyBase } from "./apply-base.entity";
 
 @Entity("designer_apply")
@@ -38,11 +38,10 @@ export class DesignerApplyEntity extends ApplyBase {
   answer6!: string;
 
   @Column({
-    nullable: true,
     name: "포트폴리오가 있다면, 첨부해주세요!",
     type: "text",
   })
-  answer7?: string;
+  answer7!: string;
   constructor(dto?: DesignerApplyRequestDto) {
     super(dto);
     if (!dto)
@@ -53,6 +52,7 @@ export class DesignerApplyEntity extends ApplyBase {
         answer4: "",
         answer5: "",
         answer6: "",
+        answer7: "",
         name: "",
         email: "",
         phone: "",

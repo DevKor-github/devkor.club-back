@@ -14,7 +14,6 @@ export class DesignerApplyRequestDto extends ApplyBaseDto {
   answer5!: string;
   @IsString()
   answer6!: string;
-  @IsOptional()
   @IsUrl({ require_protocol: true })
-  answer7?: string;
+  answer7!: string;
 }
