@@ -10,7 +10,7 @@ async function bootstrap() {
   app.useGlobalFilters(new InternalErrorFilter(), new HttpExceptionFilter());
   app.use(
     cors({
-      origin: ["http://localhost:5173"],
+      origin: ["http://localhost:5173", "https://devkor.club"],
       // TODO: 배포 후 CORS 설정 변경
     })
   );
