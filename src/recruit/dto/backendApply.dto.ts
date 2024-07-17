@@ -16,6 +16,6 @@ export class BackendApplyRequestDto extends ApplyBaseDto {
   @IsUrl({ require_protocol: true })
   answer6?: string;
   @IsOptional()
-  @IsUrl({ require_protocol: true })
+  // @IsUrl({ require_protocol: true })
   answer7?: string;
 }
