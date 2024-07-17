@@ -34,6 +34,10 @@ export class S3Service {
   }
     */
   async createFileUploadPresignedUrl(fileName: string) {
+    const extension = fileName.split(".").pop();
+    if (extension.toLowerCase() !== "pdf")
+      throw new NotAcceptableException("must be pdf");
+
     const albumBucketName = process.env.AWS_BUCKET_NAME; // S3의 버킷 이름
     const region = process.env.AWS_REGION; // 서울
     const accessKeyId = process.env.AWS_ACCESS_KEY; // IAM에서 생성한 사용자의 accessKeyId
