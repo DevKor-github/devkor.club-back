@@ -4,9 +4,8 @@ import { ApplyBaseDto } from "./applyBase.dto";
 export class FrontendApplyRequestDto extends ApplyBaseDto {
   @IsString()
   answer1!: string;
-  @IsOptional()
-  @IsUrl({ require_protocol: true })
-  answer2?: string;
+  @IsUrl()
+  answer2!: string;
   @IsString()
   answer3!: string;
   @IsString()
@@ -15,4 +14,9 @@ export class FrontendApplyRequestDto extends ApplyBaseDto {
   answer5!: string;
   @IsString()
   answer6!: string;
+  @IsString()
+  answer7!: string;
+  @IsOptional()
+  @IsUrl()
+  answer8?: string;
 }
