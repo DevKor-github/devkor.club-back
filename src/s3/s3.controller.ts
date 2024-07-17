@@ -1,11 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  UploadedFile,
-  UseInterceptors,
-} from "@nestjs/common";
-import { FileInterceptor } from "@nestjs/platform-express";
+import { Controller, Post, Body } from "@nestjs/common";
+import { CreateFileUploadPresignedUrlDto } from "./dto";
 import { S3Service } from "./s3.service";
 @Controller("s3")
 export class S3Controller {
@@ -18,8 +12,12 @@ export class S3Controller {
   }
     */
 
-  @Get("/presigned-url")
-  async getPresignedUrl() {
-    return await this.s3Service.getPresignedUrl();
+  @Post("/presigned-url")
+  // parse fileName from request body
+  async createFileUploadPresignedUrl(
+    @Body() createFileUploadPresignedUrlDto: CreateFileUploadPresignedUrlDto
+  ) {
+    const { fileName } = createFileUploadPresignedUrlDto;
+    return await this.s3Service.createFileUploadPresignedUrl(fileName);
   }
 }

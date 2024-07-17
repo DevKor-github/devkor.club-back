@@ -33,7 +33,7 @@ export class S3Service {
     return data.Location;
   }
     */
-  async getPresignedUrl() {
+  async createFileUploadPresignedUrl(fileName: string) {
     const albumBucketName = process.env.AWS_BUCKET_NAME; // S3의 버킷 이름
     const region = process.env.AWS_REGION; // 서울
     const accessKeyId = process.env.AWS_ACCESS_KEY; // IAM에서 생성한 사용자의 accessKeyId
@@ -43,19 +43,13 @@ export class S3Service {
       accessKeyId,
       secretAccessKey,
     });
-
     const s3 = new AWS.S3();
-    const fileName = await `${Date.now()}-${Math.random()
-      .toString(36)
-      .substr(2, 9)}.pdf`; // file name 생성
     const params = {
       Bucket: albumBucketName,
       Key: fileName,
-      Expires: 60 * 60,
+      Expires: 60,
     };
-    return {
-      url: s3.getSignedUrl("putObject", params),
-      fileName: fileName,
-    };
+    const url = await s3.getSignedUrlPromise("putObject", params);
+    return url;
   }
 }
