@@ -4,7 +4,7 @@ import { ApplyBaseDto } from "./applyBase.dto";
 export class BackendApplyRequestDto extends ApplyBaseDto {
   @IsString()
   answer1!: string;
-  @IsUrl({ require_protocol: true })
+  @IsString()
   answer2!: string;
   @IsString()
   answer3!: string;

@@ -4,8 +4,7 @@ import { ApplyBaseDto } from "./applyBase.dto";
 export class FrontendApplyRequestDto extends ApplyBaseDto {
   @IsString()
   answer1!: string;
-  @IsUrl()
-  answer2!: string;
+  @IsString() answer2!: string;
   @IsString()
   answer3!: string;
   @IsString()

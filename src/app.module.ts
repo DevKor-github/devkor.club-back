@@ -1,8 +1,13 @@
-import { Module } from "@nestjs/common";
+import {
+  type MiddlewareConsumer,
+  Module,
+  type NestModule,
+} from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { LoggerMiddleware } from "./logger.middleware";
 import { RecruitModule } from "./recruit/recruit.module";
 import { S3Module } from "./s3/s3.module";
 
@@ -25,4 +30,8 @@ import { S3Module } from "./s3/s3.module";
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes("*");
+  }
+}
