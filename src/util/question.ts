@@ -1,9 +1,12 @@
 const PM_QUESTIONS = ["질문1"];
 
-export type position = "PM";
+export type position = "PM" | "FE 개발자" | "BE 개발자" | "디자이너";
 
 export const QUESTION_MAP: Record<position, Array<string>> = {
   PM: PM_QUESTIONS,
+  "BE 개발자": [],
+  "FE 개발자": [],
+  디자이너: [],
 };
 
 export function createAnswerMap(position: position, answers: Array<string>) {
