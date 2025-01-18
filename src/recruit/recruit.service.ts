@@ -42,10 +42,6 @@ export class RecruitService {
 
   allChannelPath = "/channels/1212765451558461551/messages";
 
-  async test() {
-    return this.notionService.test();
-  }
-
   async notificationToChannel(content: string) {
     await this.client.post(this.allChannelPath, { content });
   }
