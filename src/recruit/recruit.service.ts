@@ -55,7 +55,7 @@ export class RecruitService {
 
     await this.messageService.sendOne(body);
   }
-
+// TODO: 문자 내용 변경 
   async applyFrontend(dto: FrontendApplyRequestDto) {
     const entity = new FrontApplyEntity(dto);
     await this.frontApplyRepository.save(entity);
@@ -161,5 +161,76 @@ DevKor 운영진 드림
 DevKor 운영진 드림
 `;
     this.sendSMS(dto.phone.split("-").join(""), message);
+  }
+
+  async arrangeInterviewTime() {
+    const frontList = (await this.frontApplyRepository.find()).map((app) => {
+      return { type: "fe", ...app };
+    });
+    const backList = (await this.backendApplyRepository.find()).map((app) => {
+      return { type: "be", ...app };
+    });
+    const pmList = (await this.pmApplyRepository.find()).map((app) => {
+      return { type: "pm", ...app };
+    });
+    const designerList = (await this.designerApplyRepository.find()).map(
+      (app) => {
+        return { type: "de", ...app };
+      },
+    );
+
+    const allList = [...frontList, ...backList, ...pmList, ...designerList];
+    const interviewMap = {
+      1: "월 1시",
+      2: "월 2시",
+      4: "월 3시",
+      8: "월 4시",
+      16: "월 5시",
+
+      32: "화 1시",
+      64: "화 2시",
+      128: "화 3시",
+      256: "화 4시",
+      512: "화 5시",
+
+      1024: "수 1시",
+      2048: "수 2시",
+      4096: "수 3시",
+      8192: "수 4시",
+      16384: "수 5시",
+    };
+    const map = {};
+    for (const apply of allList) {
+      const { interviewTime } = apply;
+      const obj = {
+        name: apply.name,
+        phone: apply.phone,
+        type: apply.type,
+        time: [],
+      };
+      for (let i = 0; i < 16; i++) {
+        const val = 1 << i;
+        if (interviewTime & val) {
+          const time = interviewMap[val];
+
+          map[time] = map[time] ? [...map[time], obj] : [obj];
+          obj.time.push(time);
+        }
+      }
+      console.log(obj);
+    }
+    //console.log(map);
+  }
+
+  async sendInterviewTime() {
+    const list: { time: string; name: string; phoneNumber: string }[] = [
+  ];
+    for (const i of list) {
+      const { name } = i;
+      const message = `안녕하세요, DevKor에 지원해 주셔서 감사합니다. 
+아쉽게도 최종 면접에서, 불합격되었음을 안내드립니다. 
+DevKor에 관심 가져주셔서 감사하다는 말씀 드리며, 향후 기회를 기대하겠습니다.`;
+      await this.sendSMS(i.phoneNumber, message);
+    }
   }
 }
