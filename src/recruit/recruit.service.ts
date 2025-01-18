@@ -15,6 +15,7 @@ import {
   FrontApplyEntity,
   PmApplyEntity,
 } from "./entity";
+import { NotionService } from "@/notion/notion.service";
 @Injectable()
 export class RecruitService {
   constructor(
@@ -26,10 +27,11 @@ export class RecruitService {
     private readonly pmApplyRepository: Repository<PmApplyEntity>,
     @InjectRepository(DesignerApplyEntity)
     private readonly designerApplyRepository: Repository<DesignerApplyEntity>,
+    private readonly notionService: NotionService
   ) {}
   messageService = new coolsms(
     process.env.MESSAGE_API_KEY,
-    process.env.MESSAGE_API_SECRET,
+    process.env.MESSAGE_API_SECRET
   );
   client = axios.create({
     headers: {
@@ -39,6 +41,11 @@ export class RecruitService {
   });
 
   allChannelPath = "/channels/1212765451558461551/messages";
+
+  async test() {
+    return this.notionService.test();
+  }
+
   async notificationToChannel(content: string) {
     await this.client.post(this.allChannelPath, { content });
   }
@@ -55,7 +62,7 @@ export class RecruitService {
 
     await this.messageService.sendOne(body);
   }
-// TODO: 문자 내용 변경 
+  // TODO: 문자 내용 변경
   async applyFrontend(dto: FrontendApplyRequestDto) {
     const entity = new FrontApplyEntity(dto);
     await this.frontApplyRepository.save(entity);
@@ -176,7 +183,7 @@ DevKor 운영진 드림
     const designerList = (await this.designerApplyRepository.find()).map(
       (app) => {
         return { type: "de", ...app };
-      },
+      }
     );
 
     const allList = [...frontList, ...backList, ...pmList, ...designerList];
@@ -223,8 +230,7 @@ DevKor 운영진 드림
   }
 
   async sendInterviewTime() {
-    const list: { time: string; name: string; phoneNumber: string }[] = [
-  ];
+    const list: { time: string; name: string; phoneNumber: string }[] = [];
     for (const i of list) {
       const { name } = i;
       const message = `안녕하세요, DevKor에 지원해 주셔서 감사합니다. 

@@ -8,6 +8,7 @@ import {
 } from "./entity";
 import { RecruitController } from "./recruit.controller";
 import { RecruitService } from "./recruit.service";
+import { NotionModule } from "@/notion/notion.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { RecruitService } from "./recruit.service";
       BackendApplyEntity,
       DesignerApplyEntity,
     ]),
+    NotionModule,
   ],
   providers: [RecruitService],
   controllers: [RecruitController],
