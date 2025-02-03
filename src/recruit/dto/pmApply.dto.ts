@@ -10,7 +10,6 @@ export class PmApplyRequestDto extends ApplyBaseDto {
   answer3!: string;
   @IsString()
   answer4!: string;
-  @IsOptional()
-  @IsUrl({ require_protocol: true })
-  answer5?: string;
+  @IsString()
+  answer5!: string;
 }

@@ -4,21 +4,14 @@ import { ApplyBaseDto } from "./applyBase.dto";
 export class BackendApplyRequestDto extends ApplyBaseDto {
   @IsString()
   answer1!: string;
+  @IsOptional()
   @IsString()
-  answer2!: string;
+  answer2?: string;
+
   @IsString()
   answer3!: string;
   @IsString()
   answer4!: string;
   @IsString()
   answer5!: string;
-  @IsString()
-  answer6!: string;
-  @IsString()
-  answer7!: string;
-  @IsString()
-  answer8!: string;
-  @IsOptional()
-  @IsUrl()
-  answer9?: string;
 }
