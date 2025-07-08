@@ -21,6 +21,7 @@
     "@nestjs/swagger": "^11.2.0",
     "@nestjs/typeorm": "^10.0.2",
     "@notionhq/client": "^4.0.0",
+    "@sapphire/snowflake": "^3.5.5",
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
@@ -94,6 +95,7 @@
     "@common/(.*)$": "<rootDir>/src/common/$1",
     "@applications/(.*)$": "<rootDir>/src/applications/$1",
     "@presentations/(.*)$": "<rootDir>/src/presentations/$1",
+    "@domains/(.*)$": "<rootDir>/src/domains/$1",
     "@/(.*)$": "<rootDir>/src/$1"
   }
 }

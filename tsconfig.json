@@ -18,6 +18,7 @@
       "@common/*": ["./src/common/*"],
       "@applications/*": ["./src/applications/*"],
       "@presentations/*": ["./src/presentations/*"],
+      "@domains/*": ["./src/domains/*"],
       "@/*": ["./src/*"]
     }
   }
