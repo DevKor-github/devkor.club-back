@@ -1,10 +1,11 @@
+import { AppModule } from "@/app.module";
+import { HttpExceptionFilter } from "@common/system/filters/httpException.filter";
+import { InternalErrorFilter } from "@common/system/filters/internal-error.filter";
 import { NotAcceptableException, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 
 import cors from "cors";
-import { AppModule } from "./app.module";
-import { HttpExceptionFilter } from "./common/system/filters/httpException.filter";
-import { InternalErrorFilter } from "./common/system/filters/internal-error.filter";
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalFilters(new InternalErrorFilter(), new HttpExceptionFilter());

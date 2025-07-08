@@ -1,4 +1,4 @@
-import type { position } from "./question";
+import { type position } from "@common/shared/util/question";
 
 export function deriveCompleteMessage(type: position, name: string) {
   return `안녕하세요, ${name}님! DevKor에 지원해주셔서 감사합니다.

@@ -1,5 +1,5 @@
+import { NotionService } from "@common/support/notion/notion.service";
 import { Module } from "@nestjs/common";
-import { NotionService } from "./notion.service";
 
 @Module({
   providers: [NotionService],

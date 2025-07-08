@@ -1,11 +1,11 @@
+import { RecruitService } from "@applications/recruit/recruit.service";
 import { Body, Controller, Post } from "@nestjs/common";
 import {
   BackendApplyRequestDto,
   DesignerApplyRequestDto,
   FrontendApplyRequestDto,
   PmApplyRequestDto,
-} from "./dto";
-import { RecruitService } from "../../../applications/recruit/recruit.service";
+} from "@presentations/http/recruit/dto";
 
 @Controller("recruit")
 export class RecruitController {

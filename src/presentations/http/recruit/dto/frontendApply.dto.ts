@@ -1,5 +1,5 @@
-import { IsOptional, IsString, IsUrl } from "class-validator";
-import { ApplyBaseDto } from "./applyBase.dto";
+import { ApplyBaseDto } from "@presentations/http/recruit/dto/applyBase.dto";
+import { IsOptional, IsString } from "class-validator";
 
 export class FrontendApplyRequestDto extends ApplyBaseDto {
   @IsString()
