@@ -1,18 +1,15 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
-import { AppService } from "../../../app.service";
-import { S3Service } from "@/common/support/s3/s3.service";
-import { CreateFileUploadPresignedUrlDto } from "@/presentations/http/app/dto/presignedUrl.dto";
+
+import { CreateFileUploadPresignedUrlDto } from "@presentations/http/app/dto/presignedUrl.dto";
+import { S3Service } from "@common/support/s3/s3.service";
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-    private readonly s3Service: S3Service
-  ) {}
+  constructor(private readonly s3Service: S3Service) {}
 
   @Get()
   getHello(): string {
-    return this.appService.getHello();
+    return new Date().toISOString().substring(0, 10);
   }
 
   @Post("/presigned-url")

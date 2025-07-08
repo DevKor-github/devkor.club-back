@@ -1,13 +1,12 @@
+import { RecruitModule } from "@applications/recruit/recruit.module";
+import { S3Module } from "@common/support/s3/s3.module";
+import { SystemModule } from "@common/system/system.module";
 import { Module } from "@nestjs/common";
-
-import { AppService } from "./app.service";
-import { RecruitModule } from "./applications/recruit/recruit.module";
-import { SystemModule } from "@/common/system/system.module";
-import { AppController, RecruitController } from "@/presentations/http";
+import { AppController, RecruitController } from "@presentations/http";
 
 @Module({
-  imports: [SystemModule, RecruitModule],
+  imports: [SystemModule, S3Module, RecruitModule],
   controllers: [AppController, RecruitController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}

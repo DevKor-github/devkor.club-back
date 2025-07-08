@@ -15,7 +15,10 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "paths": {
-      "@/*": ["src/*"]
+      "@common/*": ["./src/common/*"],
+      "@applications/*": ["./src/applications/*"],
+      "@presentations/*": ["./src/presentations/*"],
+      "@/*": ["./src/*"]
     }
   }
 }
