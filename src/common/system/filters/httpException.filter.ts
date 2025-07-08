@@ -5,10 +5,10 @@ import {
   HttpException,
 } from "@nestjs/common";
 import type { Response } from "express";
+import { ControllerResponse } from "@common/shared/response/controller.response";
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
-
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -17,10 +17,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const message = exception.message;
     const name = exception.name;
 
-    response.status(status).json({
-      status,
-      message: message,
-      name: name,
-    });
+    const errorResponse = ControllerResponse.error(
+      {
+        name,
+        details: exception.getResponse(),
+      },
+      message,
+      status
+    );
+
+    response.status(status).json(errorResponse);
   }
 }
