@@ -1,8 +1,16 @@
 import { Injectable } from "@nestjs/common";
-import { Client } from "@notionhq/client";
+import {
+  Client,
+  CreatePageResponse,
+  GetPageResponse,
+  UpdatePageResponse,
+} from "@notionhq/client";
 import { NotionPropertyFactory } from "./notion-property.factory";
 import { NotionBlockFactory } from "./notion-block.factory";
-import { NotionDatabaseService } from "./notion-database.service";
+import {
+  NotionDatabaseQueryResult,
+  NotionDatabaseService,
+} from "./notion-database.service";
 
 @Injectable()
 export class NotionService {
@@ -20,7 +28,7 @@ export class NotionService {
     databaseId: string,
     properties: Record<string, any>,
     children?: Array<any>
-  ) {
+  ): Promise<CreatePageResponse> {
     return await this.notion.pages.create({
       parent: { database_id: databaseId },
       properties,
@@ -35,11 +43,11 @@ export class NotionService {
     });
   }
 
-  async getPage(pageId: string) {
+  async getPage(pageId: string): Promise<GetPageResponse> {
     return await this.notion.pages.retrieve({ page_id: pageId });
   }
 
-  async deletePage(pageId: string) {
+  async deletePage(pageId: string): Promise<UpdatePageResponse> {
     return await this.notion.pages.update({
       page_id: pageId,
       archived: true,
@@ -125,7 +133,10 @@ export class NotionService {
   }
 
   // Database service methods delegation
-  async queryDatabase(databaseId: string, options: any = {}) {
+  async queryDatabase(
+    databaseId: string,
+    options: any = {}
+  ): Promise<NotionDatabaseQueryResult> {
     return this.databaseService.queryDatabase(databaseId, options);
   }
 

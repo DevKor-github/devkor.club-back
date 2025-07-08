@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { Client } from "@notionhq/client";
 
 export interface NotionDatabaseQueryOptions {
@@ -20,12 +20,16 @@ export class NotionDatabaseService {
   private readonly notion = new Client({
     auth: process.env.NOTION_API_KEY,
   });
+  private readonly logger = new Logger(this.constructor.name);
 
   async queryDatabase(
     databaseId: string,
     options: NotionDatabaseQueryOptions = {}
   ): Promise<NotionDatabaseQueryResult> {
     const { filter, sorts, startCursor, pageSize = 100 } = options;
+
+    this.logger.log(`queryDatabase: ${databaseId}`);
+    this.logger.log(`options: ${JSON.stringify(options)}`);
 
     const response = await this.notion.databases.query({
       database_id: databaseId,
@@ -34,6 +38,8 @@ export class NotionDatabaseService {
       start_cursor: startCursor,
       page_size: pageSize,
     });
+
+    this.logger.log(`response: ${JSON.stringify(response)}`);
 
     return {
       results: response.results,
@@ -118,6 +124,7 @@ export class NotionDatabaseService {
     hasNext: boolean;
     hasPrev: boolean;
   }> {
+    const startTime = Date.now();
     const allPages = await this.getAllPages(databaseId, options);
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
@@ -125,6 +132,9 @@ export class NotionDatabaseService {
 
     const totalCount = allPages.length;
     const totalPages = Math.ceil(totalCount / limit);
+
+    const processingTime = Date.now() - startTime;
+    this.logger.log(`getPaginatedPages: ${processingTime}ms`);
 
     return {
       pages: paginatedPages,
