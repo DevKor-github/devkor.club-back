@@ -1,5 +1,8 @@
 import { RecruitService } from "@applications/recruit/recruit.service";
-import { Body, Controller, Post } from "@nestjs/common";
+import { ApiResponseType } from "@common/shared/response/apiResponse.decorator";
+import { ControllerResponse } from "@common/shared/response/controller.response";
+import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
+import { ApiOperation } from "@nestjs/swagger";
 import {
   BackendApplyRequestDto,
   DesignerApplyRequestDto,
@@ -18,27 +21,50 @@ export class RecruitController {
     // if (!(this.startAt <= now && now < this.endAt))
     //   throw new BadRequestException("지원 기간이 아닙니다.");
   }
+  @ApiOperation({ summary: "FE 지원" })
+  @ApiResponseType(undefined)
   @Post("/apply/fe")
-  async applyFrontend(@Body() body: FrontendApplyRequestDto) {
+  @HttpCode(HttpStatus.OK)
+  async applyFrontend(
+    @Body() body: FrontendApplyRequestDto
+  ): Promise<ControllerResponse<void>> {
     this.blockExpiredApplication();
-    return await this.recruitService.applyFrontend(body);
+    return ControllerResponse.success(
+      await this.recruitService.applyFrontend(body)
+    );
   }
 
+  @ApiOperation({ summary: "BE 지원" })
+  @ApiResponseType(undefined)
   @Post("/apply/be")
-  async applyBackend(@Body() body: BackendApplyRequestDto) {
+  async applyBackend(
+    @Body() body: BackendApplyRequestDto
+  ): Promise<ControllerResponse<void>> {
     this.blockExpiredApplication();
-    return await this.recruitService.applyBackend(body);
+    return ControllerResponse.success(
+      await this.recruitService.applyBackend(body)
+    );
   }
 
+  @ApiOperation({ summary: "PM 지원" })
+  @ApiResponseType(undefined)
   @Post("/apply/pm")
-  async applyPm(@Body() body: PmApplyRequestDto) {
+  async applyPm(
+    @Body() body: PmApplyRequestDto
+  ): Promise<ControllerResponse<void>> {
     this.blockExpiredApplication();
-    return await this.recruitService.applyPm(body);
+    return ControllerResponse.success(await this.recruitService.applyPm(body));
   }
 
+  @ApiOperation({ summary: "디자이너 지원" })
+  @ApiResponseType(undefined)
   @Post("/apply/de")
-  async applyDesigner(@Body() body: DesignerApplyRequestDto) {
+  async applyDesigner(
+    @Body() body: DesignerApplyRequestDto
+  ): Promise<ControllerResponse<void>> {
     this.blockExpiredApplication();
-    return await this.recruitService.applyDesigner(body);
+    return ControllerResponse.success(
+      await this.recruitService.applyDesigner(body)
+    );
   }
 }

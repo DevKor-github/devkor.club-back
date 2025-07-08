@@ -5,6 +5,11 @@ import { NotAcceptableException, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 
 import cors from "cors";
+import {
+  DocumentBuilder,
+  SwaggerDocumentOptions,
+  SwaggerModule,
+} from "@nestjs/swagger";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -32,6 +37,18 @@ async function bootstrap() {
       },
     })
   );
+
+  const config = new DocumentBuilder()
+    .setTitle("Devkor.club API")
+    .setDescription("Devkor.club API 문서")
+    .setVersion("1.0")
+    .addTag("devkor")
+    .build();
+  const options: SwaggerDocumentOptions = {
+    autoTagControllers: true,
+  };
+  const document = SwaggerModule.createDocument(app, config, options);
+  SwaggerModule.setup("docs", app, document);
   await app.listen(3071);
 }
 bootstrap();
