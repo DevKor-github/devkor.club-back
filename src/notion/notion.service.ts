@@ -1,10 +1,5 @@
-import {
-  QUESTION_MAP,
-  type position,
-  createAnswerMap,
-  deriveName,
-} from "@/util/question";
-import { Injectable, NotAcceptableException } from "@nestjs/common";
+import { type position, createAnswerMap, deriveName } from "@/util/question";
+import { Injectable } from "@nestjs/common";
 import { Client } from "@notionhq/client";
 @Injectable()
 export class NotionService {
