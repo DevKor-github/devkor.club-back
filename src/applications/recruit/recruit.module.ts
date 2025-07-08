@@ -1,8 +1,7 @@
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { RecruitController } from "./recruit.controller";
+import { RecruitController } from "../../presentations/http/recruit/recruit.controller";
 import { RecruitService } from "./recruit.service";
-import { NotionModule } from "@/notion/notion.module";
+import { NotionModule } from "@/common/support/notion/notion.module";
 
 @Module({
   imports: [NotionModule],
