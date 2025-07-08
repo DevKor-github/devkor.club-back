@@ -1,11 +1,20 @@
 import { Injectable } from "@nestjs/common";
 import { Client } from "@notionhq/client";
+import { NotionPropertyFactory } from "./notion-property.factory";
+import { NotionBlockFactory } from "./notion-block.factory";
+import { NotionDatabaseService } from "./notion-database.service";
 
 @Injectable()
 export class NotionService {
   notion = new Client({
     auth: process.env.NOTION_API_KEY,
   });
+
+  constructor(
+    private readonly propertyFactory: NotionPropertyFactory,
+    private readonly blockFactory: NotionBlockFactory,
+    private readonly databaseService: NotionDatabaseService
+  ) {}
 
   async createPage(
     databaseId: string,
@@ -19,54 +28,171 @@ export class NotionService {
     });
   }
 
+  async updatePage(pageId: string, properties: Record<string, any>) {
+    return await this.notion.pages.update({
+      page_id: pageId,
+      properties,
+    });
+  }
+
+  async getPage(pageId: string) {
+    return await this.notion.pages.retrieve({ page_id: pageId });
+  }
+
+  async deletePage(pageId: string) {
+    return await this.notion.pages.update({
+      page_id: pageId,
+      archived: true,
+    });
+  }
+
+  // Property factory methods delegation
   createTextProperty(content: string) {
-    return {
-      type: "rich_text",
-      rich_text: [
-        {
-          type: "text",
-          text: {
-            content,
-          },
-        },
-      ],
-    };
+    return this.propertyFactory.createTextProperty(content);
   }
 
   createTitleProperty(content: string) {
-    return {
-      title: [
-        {
-          text: { content },
-        },
-      ],
-    };
+    return this.propertyFactory.createTitleProperty(content);
   }
 
+  createNumberProperty(number: number) {
+    return this.propertyFactory.createNumberProperty(number);
+  }
+
+  createSelectProperty(name: string) {
+    return this.propertyFactory.createSelectProperty(name);
+  }
+
+  createMultiSelectProperty(names: string[]) {
+    return this.propertyFactory.createMultiSelectProperty(names);
+  }
+
+  createCheckboxProperty(checked: boolean) {
+    return this.propertyFactory.createCheckboxProperty(checked);
+  }
+
+  createDateProperty(start: string, end?: string) {
+    return this.propertyFactory.createDateProperty(start, end);
+  }
+
+  createUrlProperty(url: string) {
+    return this.propertyFactory.createUrlProperty(url);
+  }
+
+  createEmailProperty(email: string) {
+    return this.propertyFactory.createEmailProperty(email);
+  }
+
+  createPhoneNumberProperty(phoneNumber: string) {
+    return this.propertyFactory.createPhoneNumberProperty(phoneNumber);
+  }
+
+  // Block factory methods delegation
   createHeadingBlock(content: string, level: 1 | 2 | 3 = 2) {
-    return {
-      object: "block",
-      type: `heading_${level}`,
-      [`heading_${level}`]: {
-        rich_text: [{ type: "text", text: { content } }],
-      },
-    };
+    return this.blockFactory.createHeadingBlock(content, level);
   }
 
   createParagraphBlock(content: string) {
-    return {
-      object: "block",
-      type: "paragraph",
-      paragraph: {
-        rich_text: [
-          {
-            type: "text",
-            text: {
-              content,
-            },
-          },
-        ],
-      },
-    };
+    return this.blockFactory.createParagraphBlock(content);
+  }
+
+  createBulletedListBlock(content: string) {
+    return this.blockFactory.createBulletedListBlock(content);
+  }
+
+  createNumberedListBlock(content: string) {
+    return this.blockFactory.createNumberedListBlock(content);
+  }
+
+  createToggleBlock(content: string, children: any[] = []) {
+    return this.blockFactory.createToggleBlock(content, children);
+  }
+
+  createCodeBlock(content: string, language: string = "javascript") {
+    return this.blockFactory.createCodeBlock(content, language);
+  }
+
+  createQuoteBlock(content: string) {
+    return this.blockFactory.createQuoteBlock(content);
+  }
+
+  createCalloutBlock(content: string, icon: string = "💡") {
+    return this.blockFactory.createCalloutBlock(content, icon);
+  }
+
+  createDividerBlock() {
+    return this.blockFactory.createDividerBlock();
+  }
+
+  // Database service methods delegation
+  async queryDatabase(databaseId: string, options: any = {}) {
+    return this.databaseService.queryDatabase(databaseId, options);
+  }
+
+  async getAllPages(databaseId: string, options: any = {}) {
+    return this.databaseService.getAllPages(databaseId, options);
+  }
+
+  async getPagesByProperty(
+    databaseId: string,
+    propertyName: string,
+    value: string | number | boolean,
+    options: any = {}
+  ) {
+    return this.databaseService.getPagesByProperty(
+      databaseId,
+      propertyName,
+      value,
+      options
+    );
+  }
+
+  async searchPages(
+    databaseId: string,
+    searchQuery: string,
+    options: any = {}
+  ) {
+    return this.databaseService.searchPages(databaseId, searchQuery, options);
+  }
+
+  async getPageCount(databaseId: string, filter?: any) {
+    return this.databaseService.getPageCount(databaseId, filter);
+  }
+
+  async getPaginatedPages(
+    databaseId: string,
+    page: number,
+    limit: number,
+    options: any = {}
+  ) {
+    return this.databaseService.getPaginatedPages(
+      databaseId,
+      page,
+      limit,
+      options
+    );
+  }
+
+  createSortConfig(
+    propertyName: string,
+    direction: "ascending" | "descending" = "ascending"
+  ) {
+    return this.databaseService.createSortConfig(propertyName, direction);
+  }
+
+  createDateFilter(
+    propertyName: string,
+    operator: "equals" | "before" | "after" | "on_or_before" | "on_or_after",
+    date: string
+  ) {
+    return this.databaseService.createDateFilter(propertyName, operator, date);
+  }
+
+  createSelectFilter(propertyName: string, value: string) {
+    return this.databaseService.createSelectFilter(propertyName, value);
+  }
+
+  createMultiSelectFilter(propertyName: string, value: string) {
+    return this.databaseService.createMultiSelectFilter(propertyName, value);
   }
 }
