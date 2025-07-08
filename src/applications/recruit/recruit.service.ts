@@ -1,16 +1,15 @@
 import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
+
 import axios from "axios";
 import coolsms, { type MessageType } from "coolsms-node-sdk";
-import { Repository } from "typeorm";
 import {
   BackendApplyRequestDto,
   DesignerApplyRequestDto,
   FrontendApplyRequestDto,
   PmApplyRequestDto,
-} from "./dto";
-import { NotionService } from "@/notion/notion.service";
-import { deriveCompleteMessage } from "@/util/sms";
+} from "../../presentations/http/recruit/dto";
+import { NotionService } from "@/common/support/notion/notion.service";
+import { deriveCompleteMessage } from "@/common/shared/util/sms";
 @Injectable()
 export class RecruitService {
   constructor(private readonly notionService: NotionService) {}

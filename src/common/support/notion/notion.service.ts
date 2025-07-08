@@ -1,4 +1,8 @@
-import { type position, createAnswerMap, deriveName } from "@/util/question";
+import {
+  type position,
+  createAnswerMap,
+  deriveName,
+} from "@/common/shared/util/question";
 import { Injectable } from "@nestjs/common";
 import { Client } from "@notionhq/client";
 @Injectable()

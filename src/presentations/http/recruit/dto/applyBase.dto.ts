@@ -1,8 +1,7 @@
-import { IsPhoneNumber } from "@/util/IsPhoneNumber.decorator";
+import { IsPhoneNumber } from "@/common/shared/util/IsPhoneNumber.decorator";
 import {
   IsEmail,
   IsInt,
-  IsNumberString,
   IsString,
   Length,
   MinLength,

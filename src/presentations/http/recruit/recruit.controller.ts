@@ -1,17 +1,11 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  Post,
-} from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import {
   BackendApplyRequestDto,
   DesignerApplyRequestDto,
   FrontendApplyRequestDto,
   PmApplyRequestDto,
 } from "./dto";
-import { RecruitService } from "./recruit.service";
+import { RecruitService } from "../../../applications/recruit/recruit.service";
 
 @Controller("recruit")
 export class RecruitController {
