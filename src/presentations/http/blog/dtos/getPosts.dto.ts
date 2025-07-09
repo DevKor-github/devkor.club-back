@@ -47,8 +47,14 @@ export class GetPostsDto {
   })
   @IsOptional()
   @IsString({ each: true })
-  @Transform(({ value }) =>
-    typeof value === "string" ? value.split(",") : value
-  )
+  @Transform(({ value }) => {
+    if (value === null || value === undefined || value === "") {
+      return undefined;
+    }
+    if (typeof value === "string") {
+      return value.split(",");
+    }
+    return value;
+  })
   tags?: string[];
 }

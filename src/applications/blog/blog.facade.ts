@@ -6,6 +6,7 @@ import { EntityManager, Transactional } from "@mikro-orm/core";
 import { PostService } from "@domains/post/post.service";
 import { Page } from "@common/shared/core/page";
 import { PostId } from "@common/shared/identifiers/postId";
+import dayjs from "dayjs";
 
 @Injectable()
 export class BlogFacade {
@@ -32,35 +33,34 @@ export class BlogFacade {
   @Transactional()
   async synchronizeWeeklyILearned(startDate: string): Promise<PostInfo[]> {
     const weeklyILearneds =
-      await this.weeklyILearnedService.getAllWeeklyILearned(startDate);
+      await this.weeklyILearnedService.getAllWeeklyILearnedSimple(startDate);
 
     const results: PostInfo[] = [];
 
     for (const weekly of weeklyILearneds) {
-      const simpleWeekly =
-        this.weeklyILearnedService["convertToSimple"](weekly);
-      const content = await this.weeklyILearnedService.getWeeklyILearnedContent(
+      const { content, coverImage } = await this.weeklyILearnedService.getWeeklyILearnedContent(
         weekly.id
       );
 
       let position: Position;
       try {
-        position = this.toPosition(simpleWeekly.position);
+        position = this.toPosition(weekly.position);
       } catch (error) {
         console.error(error);
         // Position 변환 실패시 값 무시
         continue;
       }
 
-      const post = await this.postService.findPostByTitle(simpleWeekly.title);
+      const post = await this.postService.findPostByTitle(weekly.title);
 
       if (post) {
         try {
           const updatedPost = await this.postService.update(post.id, {
-            title: simpleWeekly.title,
+            title: weekly.title,
             content,
             position,
-            tags: simpleWeekly.keywords,
+            tags: weekly.keywords,
+            coverImageUrl: coverImage,
           });
           results.push(updatedPost);
         } catch (error) {
@@ -71,11 +71,14 @@ export class BlogFacade {
       } else {
         try {
           const newPost = await this.postService.create({
-            title: simpleWeekly.title,
+            title: weekly.title,
             content,
-            author: simpleWeekly.author,
+            author: weekly.author,
             position,
-            tags: simpleWeekly.keywords,
+            tags: weekly.keywords,
+            createdAt: dayjs(weekly.createdTime).tz("Asia/Seoul"),
+            updatedAt: dayjs(weekly.lastEditedTime).tz("Asia/Seoul"),
+            coverImageUrl: coverImage,
           });
           results.push(newPost);
         } catch (error) {

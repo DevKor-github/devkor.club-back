@@ -8,11 +8,15 @@ export interface PostNewProps {
   title: string;
   author: string;
   position: Position;
+  coverImageUrl: string | null;
   tags: string[];
   content: string;
+  createdAt?: Dayjs;
+  updatedAt?: Dayjs;
 }
 
 export interface PostProps extends PostNewProps {
+  viewCount: number;
   createdAt: Dayjs;
   updatedAt: Dayjs;
   deletedAt: Dayjs | null;
@@ -31,6 +35,7 @@ export class Post extends AggregateRoot<PostProps> {
     return this.create(
       {
         ...props,
+        viewCount: 0,
         createdAt: dayjs(),
         updatedAt: dayjs(),
         deletedAt: null,
@@ -97,6 +102,11 @@ export class Post extends AggregateRoot<PostProps> {
     return this.validate();
   }
 
+  public updateCoverImageUrl(coverImageUrl: string | null): Result<Post> {
+    this.props.coverImageUrl = coverImageUrl;
+    return this.validate();
+  }
+
   public updateAuthor(author: string): Result<Post> {
     this.props.author = author;
     return this.validate();
@@ -120,6 +130,17 @@ export class Post extends AggregateRoot<PostProps> {
 
   get position(): Position {
     return this.props.position;
+  }
+
+  get coverImageUrl(): string | null {
+    return this.props.coverImageUrl;
+  }
+
+  /**
+   * 도메인 외부에서 관리되는 값이므로 조회만 가능
+   */
+  get viewCount(): number {
+    return this.props.viewCount;
   }
 
   get tags(): string[] {

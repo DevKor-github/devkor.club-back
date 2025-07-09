@@ -43,6 +43,20 @@ export class PostResponseModel {
   content: string;
 
   @ApiProperty({
+    description: "포스트 커버 이미지 URL",
+    example: "https://example.com/cover.jpg",
+    nullable: true,
+    type: String,
+  })
+  coverImageUrl: string | null;
+
+  @ApiProperty({
+    description: "포스트 조회수",
+    example: 100,
+  })
+  viewCount: number;
+
+  @ApiProperty({
     description: "생성 일시 (ISO 8601 형식)",
     example: "2024-01-15T10:30:00.000Z",
   })
@@ -61,6 +75,8 @@ export class PostResponseModel {
     position: Position,
     tags: string[],
     content: string,
+    coverImageUrl: string | null,
+    viewCount: number,
     createdAt: string,
     updatedAt: string
   ) {
@@ -70,6 +86,8 @@ export class PostResponseModel {
     this.position = position;
     this.tags = tags;
     this.content = content;
+    this.coverImageUrl = coverImageUrl;
+    this.viewCount = viewCount;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
@@ -82,6 +100,8 @@ export class PostResponseModel {
       postInfo.position,
       postInfo.tags,
       postInfo.content,
+      postInfo.coverImageUrl,
+      postInfo.viewCount,
       postInfo.createdAt.toISOString(),
       postInfo.updatedAt.toISOString()
     );

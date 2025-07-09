@@ -49,4 +49,10 @@ export interface WeeklyILearnedSimple {
   createdTime: string;
   lastEditedTime: string;
   url: string;
+  coverImage: string | null;
+}
+
+export interface WeeklyILearnedContentResult {
+  content: string;
+  coverImage: string | null;
 }

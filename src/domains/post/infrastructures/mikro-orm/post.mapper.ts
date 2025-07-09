@@ -12,6 +12,8 @@ export class PostMapper {
         content: entity.content,
         author: entity.author,
         position: entity.position,
+        coverImageUrl: entity.coverImageUrl,
+        viewCount: entity.viewCount,
         tags: entity.tags,
         createdAt: dayjs(entity.createdAt),
         updatedAt: dayjs(entity.updatedAt),
@@ -34,6 +36,8 @@ export class PostMapper {
     entity.content = domain.content;
     entity.author = domain.author;
     entity.position = domain.position;
+    entity.coverImageUrl = domain.coverImageUrl;
+    entity.viewCount = domain.viewCount;
     entity.tags = domain.tags;
     entity.createdAt = domain.createdAt.toDate();
     entity.updatedAt = domain.updatedAt.toDate();

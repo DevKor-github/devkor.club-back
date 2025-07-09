@@ -9,6 +9,7 @@ import {
   WeeklyILearnedSimple,
   WeeklyILearnedPaginationInfo,
   WeeklyILearnedPaginationResult,
+  WeeklyILearnedContentResult,
 } from "@applications/blog/weeklyILearned/models/weeklyILearned.types";
 
 @Injectable()
@@ -41,40 +42,81 @@ export class WeeklyILearnedService {
     return allPages;
   }
 
-  async getWeeklyILearnedContent(pageId: string): Promise<string> {
+  async getAllWeeklyILearnedSimple(
+    startDate: string
+  ): Promise<WeeklyILearnedSimple[]> {
+    let allItems: WeeklyILearnedSimple[] = [];
+    let hasMore = true;
+    let page = 1;
+    const limit = 100;
+
+    while (hasMore) {
+      const result = await this.getPaginatedWeeklyILearnedSimple({
+        page,
+        limit,
+        startDate,
+        sortBy: "last_edited_time",
+        sortOrder: "ascending",
+      });
+      allItems = allItems.concat(result.items);
+      hasMore = result.pagination.hasNext;
+      page++;
+    }
+
+    return allItems;
+  }
+
+  async getWeeklyILearnedContent(pageId: string): Promise<WeeklyILearnedContentResult> {
     const { results } = await this.notionService.retrieveBlockChildren(pageId);
-    return results.map((block: any) => this.blockToMarkdown(block)).join("\n");
+    let coverImage: string | null = null;
+    const content = results.map((block: any) => {
+      const markdown = this.blockToMarkdown(block);
+      if (block.type === 'image' && !coverImage) {
+        if (block.image.type === 'external') {
+          coverImage = block.image.external.url;
+        } else if (block.image.type === 'file') {
+          coverImage = block.image.file.url;
+        }
+      }
+      return markdown;
+    }).join("\n");
+
+    return { content, coverImage };
   }
 
   private blockToMarkdown(block: any): string {
     const blockType = block.type;
-    const richText = block[blockType]?.rich_text;
-
-    if (!richText) {
-      return "";
-    }
-
-    const textContent = richText.map((t: any) => t.plain_text).join("");
 
     switch (blockType) {
       case "paragraph":
-        return textContent;
+        return this.getRichTextContent(block.paragraph.rich_text);
       case "heading_1":
-        return `# ${textContent}`;
+        return `# ${this.getRichTextContent(block.heading_1.rich_text)}`;
       case "heading_2":
-        return `## ${textContent}`;
+        return `## ${this.getRichTextContent(block.heading_2.rich_text)}`;
       case "heading_3":
-        return `### ${textContent}`;
+        return `### ${this.getRichTextContent(block.heading_3.rich_text)}`;
       case "bulleted_list_item":
+        return `* ${this.getRichTextContent(block.bulleted_list_item.rich_text)}`;
       case "numbered_list_item":
-        return `* ${textContent}`;
+        return `1. ${this.getRichTextContent(block.numbered_list_item.rich_text)}`;
       case "quote":
-        return `> ${textContent}`;
+        return `> ${this.getRichTextContent(block.quote.rich_text)}`;
       case "code":
-        return `\`\`\`${block.code.language}\n${textContent}\n\`\`\``;
+        return `\`\`\`${block.code.language}\n${this.getRichTextContent(block.code.rich_text)}\n\`\`\``;
+      case "image":
+        const imageUrl = block.image.type === 'external' ? block.image.external.url : block.image.file.url;
+        return `![image](${imageUrl})`;
       default:
-        return textContent;
+        return "";
     }
+  }
+
+  private getRichTextContent(richText: any[]): string {
+    if (!richText) {
+      return "";
+    }
+    return richText.map((t: any) => t.plain_text).join("");
   }
 
   async getPaginatedWeeklyILearned(
@@ -296,6 +338,15 @@ export class WeeklyILearnedService {
   }
 
   private convertToSimple(page: WeeklyILearnedPage): WeeklyILearnedSimple {
+    let coverImage: string | null = null;
+    if (page.cover) {
+      if (page.cover.type === "external") {
+        coverImage = page.cover.external.url;
+      } else if (page.cover.type === "file") {
+        coverImage = page.cover.file.url;
+      }
+    }
+
     return {
       id: page.id,
       title: page.properties["제목"].title[0]?.plain_text || "제목 없음",
@@ -308,6 +359,7 @@ export class WeeklyILearnedService {
       createdTime: page.created_time,
       lastEditedTime: page.last_edited_time,
       url: page.url,
+      coverImage,
     };
   }
 }

@@ -9,6 +9,12 @@ export class PostEntity {
   @Property()
   title: string;
 
+  @Property({ nullable: true, type: "text" })
+  coverImageUrl: string | null;
+
+  @Property()
+  viewCount: number;
+
   @Property({ type: "text" })
   content: string;
 

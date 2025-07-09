@@ -26,6 +26,24 @@
           "length": 255,
           "mappedType": "string"
         },
+        "cover_image_url": {
+          "name": "cover_image_url",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "view_count": {
+          "name": "view_count",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
         "content": {
           "name": "content",
           "type": "text",

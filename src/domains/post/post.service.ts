@@ -40,6 +40,7 @@ export class PostService {
       content: string;
       position: Position;
       tags: string[];
+      coverImageUrl: string | null;
     }
   ): Promise<PostInfo> {
     const post = await this.postReader.findById(id);
@@ -51,6 +52,7 @@ export class PostService {
       post.updateContent(props.content),
       post.updatePosition(props.position),
       post.overwriteTags(props.tags),
+      post.updateCoverImageUrl(props.coverImageUrl),
     ];
     if (Result.getFailResultIfExist(results)) {
       throw new BadRequestException(

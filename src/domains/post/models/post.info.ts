@@ -11,6 +11,8 @@ export class PostInfo {
     public readonly position: Position,
     public readonly tags: string[],
     public readonly content: string,
+    public readonly coverImageUrl: string | null,
+    public readonly viewCount: number,
     public readonly createdAt: Dayjs,
     public readonly updatedAt: Dayjs
   ) {}
@@ -23,6 +25,8 @@ export class PostInfo {
       post.position,
       post.tags,
       post.content,
+      post.coverImageUrl,
+      post.viewCount,
       post.createdAt,
       post.updatedAt
     );
