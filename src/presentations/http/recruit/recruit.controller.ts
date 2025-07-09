@@ -8,7 +8,7 @@ import {
   DesignerApplyRequestDto,
   FrontendApplyRequestDto,
   PmApplyRequestDto,
-} from "@presentations/http/recruit/dto";
+} from "@presentations/http/recruit/dtos";
 
 @Controller("recruit")
 export class RecruitController {

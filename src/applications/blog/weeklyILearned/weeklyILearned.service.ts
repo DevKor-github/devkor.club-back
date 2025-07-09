@@ -3,11 +3,13 @@ import { Injectable } from "@nestjs/common";
 import {
   WeeklyILearnedPage,
   WeeklyILearnedPaginationQuery,
-  WeeklyILearnedPaginationResult,
-  WeeklyILearnedSimple,
+} from "@applications/blog/weeklyILearned/models/weeklyILearned.dto";
+import {
   WeeklyILearnedSimplePaginationResult,
+  WeeklyILearnedSimple,
   WeeklyILearnedPaginationInfo,
-} from "./weeklyILearned.types";
+  WeeklyILearnedPaginationResult,
+} from "@applications/blog/weeklyILearned/models/weeklyILearned.types";
 
 @Injectable()
 export class WeeklyILearnedService {
@@ -15,6 +17,65 @@ export class WeeklyILearnedService {
 
   private readonly WEEKLY_I_LEARNED_DATABASE_ID =
     "1a11a845ed3e805c9a29de70277bdc1d";
+
+  async getAllWeeklyILearned(startDate: string): Promise<WeeklyILearnedPage[]> {
+    let allPages: WeeklyILearnedPage[] = [];
+    let hasMore = true;
+    let page = 1;
+    const limit = 100;
+
+    while (hasMore) {
+      const result = await this.getPaginatedWeeklyILearned({
+        page,
+        limit,
+        startDate,
+        sortBy: "last_edited_time",
+        sortOrder: "ascending",
+      });
+
+      allPages = allPages.concat(result.pages);
+      hasMore = result.pagination.hasNext;
+      page++;
+    }
+
+    return allPages;
+  }
+
+  async getWeeklyILearnedContent(pageId: string): Promise<string> {
+    const { results } = await this.notionService.retrieveBlockChildren(pageId);
+    return results.map((block: any) => this.blockToMarkdown(block)).join("\n");
+  }
+
+  private blockToMarkdown(block: any): string {
+    const blockType = block.type;
+    const richText = block[blockType]?.rich_text;
+
+    if (!richText) {
+      return "";
+    }
+
+    const textContent = richText.map((t: any) => t.plain_text).join("");
+
+    switch (blockType) {
+      case "paragraph":
+        return textContent;
+      case "heading_1":
+        return `# ${textContent}`;
+      case "heading_2":
+        return `## ${textContent}`;
+      case "heading_3":
+        return `### ${textContent}`;
+      case "bulleted_list_item":
+      case "numbered_list_item":
+        return `* ${textContent}`;
+      case "quote":
+        return `> ${textContent}`;
+      case "code":
+        return `\`\`\`${block.code.language}\n${textContent}\n\`\`\``;
+      default:
+        return textContent;
+    }
+  }
 
   async getPaginatedWeeklyILearned(
     query: WeeklyILearnedPaginationQuery
@@ -29,6 +90,7 @@ export class WeeklyILearnedService {
       author,
       sortBy = "created_time",
       sortOrder = "descending",
+      startDate,
     } = query;
 
     // 필터 생성
@@ -38,6 +100,7 @@ export class WeeklyILearnedService {
       position,
       keyword,
       author,
+      startDate,
     });
 
     // 정렬 설정 - 시스템 속성과 일반 속성 구분
@@ -174,6 +237,7 @@ export class WeeklyILearnedService {
     position?: string;
     keyword?: string;
     author?: string;
+    startDate?: string;
   }) {
     const filterConditions = [];
 
@@ -206,6 +270,15 @@ export class WeeklyILearnedService {
         property: "작성자",
         rich_text: {
           contains: filters.author,
+        },
+      });
+    }
+
+    if (filters.startDate) {
+      filterConditions.push({
+        timestamp: "last_edited_time",
+        last_edited_time: {
+          on_or_after: filters.startDate,
         },
       });
     }

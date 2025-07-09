@@ -3,6 +3,7 @@ import {
   Catch,
   type ExceptionFilter,
   HttpStatus,
+  Logger,
 } from "@nestjs/common";
 import axios from "axios";
 import type { Response } from "express";
@@ -10,6 +11,8 @@ import { ControllerResponse } from "@common/shared/response/controller.response"
 
 @Catch()
 export class InternalErrorFilter implements ExceptionFilter {
+  private logger = new Logger("InternalError");
+
   client = axios.create({
     headers: {
       Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
@@ -28,20 +31,23 @@ export class InternalErrorFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
 
     // Discord 알림 전송
-    this.notificationToChannel("internal error report : ")
-      .then(async () => {
-        exception.name &&
-          (await this.notificationToChannel(`name : ${exception.name}`));
-      })
-      .then(async () => {
-        exception.message &&
-          (await this.notificationToChannel(`message : ${exception.message}`));
-      })
-      .then(async () => {
-        exception.stack &&
-          (await this.notificationToChannel(`stack : ${exception.stack}`));
-      });
-
+    if (this.toNotify()) {
+      this.notificationToChannel("internal error report : ")
+        .then(async () => {
+          exception.name &&
+            (await this.notificationToChannel(`name : ${exception.name}`));
+        })
+        .then(async () => {
+          exception.message &&
+            (await this.notificationToChannel(
+              `message : ${exception.message}`
+            ));
+        })
+        .then(async () => {
+          exception.stack &&
+            (await this.notificationToChannel(`stack : ${exception.stack}`));
+        });
+    }
     const errorResponse = ControllerResponse.error(
       {
         name: exception.name || "UnknownError",
@@ -50,7 +56,15 @@ export class InternalErrorFilter implements ExceptionFilter {
       "Internal Server Error",
       HttpStatus.INTERNAL_SERVER_ERROR
     );
+    this.logger.error(
+      `[${HttpStatus.INTERNAL_SERVER_ERROR}] ${exception.name} - ${exception.message}`,
+      exception.stack
+    );
 
     response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(errorResponse);
+  }
+
+  private toNotify() {
+    return process.env.NODE_ENV === "production";
   }
 }

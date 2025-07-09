@@ -11,7 +11,7 @@ import {
   BackendApplyRequestDto,
   PmApplyRequestDto,
   DesignerApplyRequestDto,
-} from "@presentations/http/recruit/dto";
+} from "@presentations/http/recruit/dtos";
 
 import axios from "axios";
 import coolsms, { MessageType } from "coolsms-node-sdk";

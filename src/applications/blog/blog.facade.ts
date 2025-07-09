@@ -1,0 +1,97 @@
+import { WeeklyILearnedService } from "@applications/blog/weeklyILearned/weeklyILearned.service";
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { Position } from "@common/shared/enums/position.enum";
+import { PostInfo } from "@domains/post/models/post.info";
+import { EntityManager, Transactional } from "@mikro-orm/core";
+import { PostService } from "@domains/post/post.service";
+
+@Injectable()
+export class BlogFacade {
+  constructor(
+    private readonly weeklyILearnedService: WeeklyILearnedService,
+    private readonly postService: PostService,
+    private readonly em: EntityManager
+  ) {}
+
+  @Transactional()
+  async synchronizeWeeklyILearned(startDate: string): Promise<PostInfo[]> {
+    const weeklyILearneds =
+      await this.weeklyILearnedService.getAllWeeklyILearned(startDate);
+
+    const results: PostInfo[] = [];
+
+    for (const weekly of weeklyILearneds) {
+      const simpleWeekly =
+        this.weeklyILearnedService["convertToSimple"](weekly);
+      const content = await this.weeklyILearnedService.getWeeklyILearnedContent(
+        weekly.id
+      );
+
+      let position: Position;
+      try {
+        position = this.toPosition(simpleWeekly.position);
+      } catch (error) {
+        console.error(error);
+        // Position 변환 실패시 값 무시
+        continue;
+      }
+
+      const post = await this.postService.findPostByTitle(simpleWeekly.title);
+
+      if (post) {
+        try {
+          const updatedPost = await this.postService.update(post.id, {
+            title: simpleWeekly.title,
+            content,
+            position,
+            tags: simpleWeekly.keywords,
+          });
+          results.push(updatedPost);
+        } catch (error) {
+          // 업데이트 실패시 값 무시
+          console.error(error);
+          continue;
+        }
+      } else {
+        try {
+          const newPost = await this.postService.create({
+            title: simpleWeekly.title,
+            content,
+            author: simpleWeekly.author,
+            position,
+            tags: simpleWeekly.keywords,
+          });
+          results.push(newPost);
+        } catch (error) {
+          // 생성 실패시 값 무시
+          console.error(error);
+          continue;
+        }
+      }
+    }
+
+    return results;
+  }
+
+  private toPosition(positionString: string | null): Position {
+    if (!positionString) {
+      throw new BadRequestException("Position is required");
+    }
+
+    const positionMap: Record<string, Position> = {
+      BE: Position.BE,
+      FE: Position.FE,
+      PM: Position.PM,
+      PD: Position.PD,
+      DevOps: Position.DevOps,
+    };
+
+    const position = positionMap[positionString];
+
+    if (!position) {
+      throw new BadRequestException(`Invalid position: ${positionString}`);
+    }
+
+    return position;
+  }
+}

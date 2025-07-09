@@ -1,7 +1,7 @@
-import { ApplyBaseDto } from "@presentations/http/recruit/dto/applyBase.dto";
+import { ApplyBaseDto } from "@presentations/http/recruit/dtos/applyBase.dto";
 import { IsString } from "class-validator";
 
-export class PmApplyRequestDto extends ApplyBaseDto {
+export class DesignerApplyRequestDto extends ApplyBaseDto {
   @IsString()
   answer1!: string;
   @IsString()
@@ -12,4 +12,8 @@ export class PmApplyRequestDto extends ApplyBaseDto {
   answer4!: string;
   @IsString()
   answer5!: string;
+  @IsString()
+  answer6!: string;
+  @IsString()
+  answer7!: string;
 }

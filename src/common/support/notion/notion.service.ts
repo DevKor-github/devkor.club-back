@@ -54,6 +54,10 @@ export class NotionService {
     });
   }
 
+  async retrieveBlockChildren(blockId: string) {
+    return await this.notion.blocks.children.list({ block_id: blockId });
+  }
+
   // Property factory methods delegation
   createTextProperty(content: string) {
     return this.propertyFactory.createTextProperty(content);

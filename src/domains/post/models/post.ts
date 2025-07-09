@@ -40,16 +40,12 @@ export class Post extends AggregateRoot<PostProps> {
   }
 
   public validate(): Result<Post> {
-    if (this.props.title.length < 3) {
-      return Result.fail("Title must be at least 3 characters long");
+    if (this.props.title.length < 2) {
+      return Result.fail("Title must be at least 1 character long");
     }
 
-    if (this.props.content.length < 3) {
-      return Result.fail("Content must be at least 3 characters long");
-    }
-
-    if (this.props.tags.length < 1) {
-      return Result.fail("At least one tag is required");
+    if (this.props.content.length < 2) {
+      return Result.fail("Content must be at least 1 character long");
     }
 
     if (this.props.tags.length > 10) {
@@ -59,55 +55,55 @@ export class Post extends AggregateRoot<PostProps> {
     return Result.ok(this);
   }
 
-  public addTag(tag: string): Result<string[]> {
+  public addTag(tag: string): Result<Post> {
     if (this.hasTag(tag)) {
       return Result.fail("Tag already exists");
     }
 
     this.props.tags.push(tag);
-    return Result.ok(this.props.tags);
+    return this.validate();
   }
 
-  public removeTag(tag: string): Result<string[]> {
+  public removeTag(tag: string): Result<Post> {
     if (!this.hasTag(tag)) {
       return Result.fail("Tag not found");
     }
 
     this.props.tags = this.props.tags.filter((t) => t !== tag);
-    return Result.ok(this.props.tags);
+    return this.validate();
   }
 
   public hasTag(tag: string): boolean {
     return this.props.tags.includes(tag);
   }
 
-  public overwriteTags(tags: string[]): Result<string[]> {
+  public overwriteTags(tags: string[]): Result<Post> {
     this.props.tags = tags;
-    return Result.ok(this.props.tags);
+    return this.validate();
   }
 
-  public updateTitle(title: string): Result<string> {
+  public updateTitle(title: string): Result<Post> {
     this.props.title = title;
-    return Result.ok(this.props.title);
+    return this.validate();
   }
 
-  public updateContent(content: string): Result<string> {
+  public updateContent(content: string): Result<Post> {
     this.props.content = content;
-    return Result.ok(this.props.content);
+    return this.validate();
   }
 
-  public updatePosition(position: Position): Result<Position> {
+  public updatePosition(position: Position): Result<Post> {
     this.props.position = position;
-    return Result.ok(this.props.position);
+    return this.validate();
   }
 
-  public updateAuthor(author: string): Result<string> {
+  public updateAuthor(author: string): Result<Post> {
     this.props.author = author;
-    return Result.ok(this.props.author);
+    return this.validate();
   }
 
   override get id(): PostId {
-    return this.id;
+    return this._id as PostId;
   }
 
   get title(): string {

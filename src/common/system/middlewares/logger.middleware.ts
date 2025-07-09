@@ -15,16 +15,16 @@ export class LoggerMiddleware implements NestMiddleware {
     response.on("close", () => {
       const { statusCode } = response;
       const processingTime = Date.now() - startTime;
+      const logMessage = [
+        `[${method}] ${originalUrl} - ${statusCode} (${processingTime}ms)`,
+        `Time: ${now}`,
+        `Path: ${path}`,
+        `Query: ${JSON.stringify(query)}`,
+        `Body: ${JSON.stringify(body)}`,
+        `User-Agent: ${headers["user-agent"] || "Unknown"}`,
+      ].join(" | ");
 
-      this.logger.log(
-        `[${method}] ${originalUrl} - ${statusCode} (${processingTime}ms)`
-      );
-      this.logger.log(`Time: ${now}`);
-      this.logger.log(`Path: ${path}`);
-      this.logger.log(`Query: ${JSON.stringify(query)}`);
-      this.logger.log(`Body: ${JSON.stringify(body)}`);
-      this.logger.log(`User-Agent: ${headers["user-agent"] || "Unknown"}`);
-      this.logger.log(`IP: ${request.ip || "Unknown"}`);
+      this.logger.log(logMessage);
     });
 
     next();

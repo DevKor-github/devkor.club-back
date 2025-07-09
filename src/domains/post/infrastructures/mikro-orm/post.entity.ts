@@ -3,30 +3,30 @@ import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
 
 @Entity({ tableName: "posts" })
 export class PostEntity {
-  @PrimaryKey({ type: "uuid", defaultRaw: "uuid_generate_v4()" })
-  id!: string;
+  @PrimaryKey()
+  id: string;
 
   @Property()
-  title!: string;
+  title: string;
+
+  @Property({ type: "text" })
+  content: string;
 
   @Property()
-  content!: string;
+  author: string;
 
   @Property()
-  author!: string;
+  position: Position;
 
   @Property()
-  position!: Position;
+  tags: string[];
 
   @Property()
-  tags!: string[];
-
-  @Property()
-  createdAt: Date = new Date();
+  createdAt: Date;
 
   @Property({ onUpdate: () => new Date() })
-  updatedAt: Date = new Date();
+  updatedAt: Date;
 
   @Property({ nullable: true })
-  deletedAt?: Date;
+  deletedAt: Date | null;
 }

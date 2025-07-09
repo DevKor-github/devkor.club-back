@@ -13,6 +13,11 @@ export class MikroOrmPostReader implements PostReader {
     private readonly postRepository: EntityRepository<PostEntity>
   ) {}
 
+  async findByTitle(title: string): Promise<Post | null> {
+    const entity = await this.postRepository.findOne({ title });
+    return entity ? PostMapper.toDomain(entity) : null;
+  }
+
   async findAll(): Promise<Post[]> {
     const entities = await this.postRepository.findAll();
     return entities.map((entity) => PostMapper.toDomain(entity));
