@@ -10,7 +10,6 @@
         "options": {
           "classValidatorShim": true,
           "dtoFileNameSuffix": "dto",
-          "controllerFileNameSuffix": "controller",
           "dtoKeyOfComment": "description",
           "controllerKeyOfComment": "summary",
           "introspectComments": true

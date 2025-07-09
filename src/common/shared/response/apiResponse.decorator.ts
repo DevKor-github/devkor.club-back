@@ -1,5 +1,5 @@
 import { ControllerResponse } from "@common/shared/response/controller.response";
-import { applyDecorators, Type, HttpStatus } from "@nestjs/common";
+import { applyDecorators, Type, HttpStatus, HttpCode } from "@nestjs/common";
 import {
   ApiExtraModels,
   ApiOkResponse,
@@ -99,7 +99,8 @@ export const ApiDoc = <TModel extends ApiDocSuccessType>(
       ApiOkResponse({
         schema: successSchema,
         description: "성공 응답",
-      })
+      }),
+      HttpCode(HttpStatus.OK)
     );
   }
 
@@ -112,7 +113,7 @@ export const ApiDoc = <TModel extends ApiDocSuccessType>(
         schema: {
           allOf: [{ $ref: getSchemaPath(ControllerResponse) }],
           properties: {
-            data: { type: "null" },
+            data: { type: "object", nullable: false },
             message: { type: "string", example: errorDescription },
             status: { type: "number", example: status },
           },

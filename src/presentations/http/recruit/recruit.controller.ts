@@ -23,7 +23,7 @@ export class RecruitController {
   }
   @ApiOperation({ summary: "FE 지원" })
   @ApiResponseType(undefined)
-  @Post("/apply/fe")
+  @Post("/application/fe")
   @HttpCode(HttpStatus.OK)
   async applyFrontend(
     @Body() body: FrontendApplyRequestDto
@@ -36,7 +36,7 @@ export class RecruitController {
 
   @ApiOperation({ summary: "BE 지원" })
   @ApiResponseType(undefined)
-  @Post("/apply/be")
+  @Post("/application/be")
   async applyBackend(
     @Body() body: BackendApplyRequestDto
   ): Promise<ControllerResponse<void>> {
@@ -48,7 +48,7 @@ export class RecruitController {
 
   @ApiOperation({ summary: "PM 지원" })
   @ApiResponseType(undefined)
-  @Post("/apply/pm")
+  @Post("/application/pm")
   async applyPm(
     @Body() body: PmApplyRequestDto
   ): Promise<ControllerResponse<void>> {
@@ -58,7 +58,7 @@ export class RecruitController {
 
   @ApiOperation({ summary: "디자이너 지원" })
   @ApiResponseType(undefined)
-  @Post("/apply/de")
+  @Post("/application/de")
   async applyDesigner(
     @Body() body: DesignerApplyRequestDto
   ): Promise<ControllerResponse<void>> {

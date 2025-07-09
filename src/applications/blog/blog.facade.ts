@@ -4,6 +4,8 @@ import { Position } from "@common/shared/enums/position.enum";
 import { PostInfo } from "@domains/post/models/post.info";
 import { EntityManager, Transactional } from "@mikro-orm/core";
 import { PostService } from "@domains/post/post.service";
+import { Page } from "@common/shared/core/page";
+import { PostId } from "@common/shared/identifiers/postId";
 
 @Injectable()
 export class BlogFacade {
@@ -12,6 +14,15 @@ export class BlogFacade {
     private readonly postService: PostService,
     private readonly em: EntityManager
   ) {}
+
+  async getPosts(page: number, size: number): Promise<Page<PostInfo>> {
+    return this.postService.getPosts(page, size);
+  }
+
+  async getPost(id: string): Promise<PostInfo> {
+    const postId = new PostId(id);
+    return this.postService.getPostById(postId);
+  }
 
   @Transactional()
   async synchronizeWeeklyILearned(startDate: string): Promise<PostInfo[]> {
