@@ -3,13 +3,19 @@ import { HttpExceptionFilter } from "@common/system/filters/httpException.filter
 import { InternalErrorFilter } from "@common/system/filters/internal-error.filter";
 import { NotAcceptableException, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import cors from "cors";
 import {
   DocumentBuilder,
   SwaggerDocumentOptions,
   SwaggerModule,
 } from "@nestjs/swagger";
+import dayjs from "dayjs";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("UTC");
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

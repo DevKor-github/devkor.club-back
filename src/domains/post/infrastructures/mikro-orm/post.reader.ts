@@ -1,8 +1,9 @@
+import { Position } from "@common/shared/enums/position.enum";
 import { PostReader } from "@domains/post/post.reader";
 import { Post } from "@domains/post/models/post";
 import { PostId } from "@common/shared/identifiers/postId";
 import { InjectRepository } from "@mikro-orm/nestjs";
-import { EntityRepository } from "@mikro-orm/core";
+import { EntityRepository, FilterQuery } from "@mikro-orm/core";
 import { Page } from "@common/shared/core/page";
 import { PostEntity } from "@domains/post/infrastructures/mikro-orm/post.entity";
 import { PostMapper } from "@domains/post/infrastructures/mikro-orm/post.mapper";
@@ -23,15 +24,27 @@ export class MikroOrmPostReader implements PostReader {
     return entities.map((entity) => PostMapper.toDomain(entity));
   }
 
-  async findPaginated(page: number, limit: number): Promise<Page<Post>> {
-    const [entities, total] = await this.postRepository.findAndCount(
-      {},
-      {
-        offset: (page - 1) * limit,
-        limit: limit,
-        orderBy: { createdAt: "DESC" },
-      }
-    );
+  async findPaginated(
+    page: number,
+    limit: number,
+    position?: Position,
+    tags?: string[]
+  ): Promise<Page<Post>> {
+    const where: FilterQuery<PostEntity> = {};
+
+    if (position) {
+      where.position = position;
+    }
+
+    if (tags) {
+      where.tags = { $overlap: tags };
+    }
+
+    const [entities, total] = await this.postRepository.findAndCount(where, {
+      offset: (page - 1) * limit,
+      limit: limit,
+      orderBy: { createdAt: "DESC" },
+    });
     const posts = entities.map((entity) => PostMapper.toDomain(entity));
     return new Page(posts, total, page, limit);
   }

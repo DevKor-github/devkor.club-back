@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Type } from "class-transformer";
-import { IsInt, IsOptional, Max, Min } from "class-validator";
+import { Transform, Type } from "class-transformer";
+import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from "class-validator";
+import { Position } from "@common/shared/enums/position.enum";
 
 export class GetPostsDto {
   @ApiProperty({
@@ -27,4 +28,27 @@ export class GetPostsDto {
   @Min(1)
   @Max(100)
   size?: number;
+
+  @ApiProperty({
+    description: "포지션 필터",
+    enum: Position,
+    example: Position.FE,
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(Position)
+  position?: Position;
+
+  @ApiProperty({
+    description:
+      "태그 필터 (복수 입력, 하나라도 포함되면 조회) ex: ?tags=NestJS&tags=React or tags=NestJS,React",
+    example: "NestJS,React",
+    required: false,
+  })
+  @IsOptional()
+  @IsString({ each: true })
+  @Transform(({ value }) =>
+    typeof value === "string" ? value.split(",") : value
+  )
+  tags?: string[];
 }

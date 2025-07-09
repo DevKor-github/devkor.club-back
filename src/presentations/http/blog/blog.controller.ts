@@ -29,8 +29,13 @@ export class BlogController {
   async getPosts(
     @Query() getPostsDto: GetPostsDto
   ): Promise<ControllerResponse<PostPageResponseModel>> {
-    const { page, size } = getPostsDto;
-    const postPage = await this.blogService.getPosts(page ?? 1, size ?? 10);
+    const { page, size, position, tags } = getPostsDto;
+    const postPage = await this.blogService.getPosts(
+      page ?? 1,
+      size ?? 10,
+      position,
+      tags
+    );
     const postResponsePage = new PostPageResponseModel(
       postPage.items.map(PostResponseModel.fromPostInfo),
       postPage.total,

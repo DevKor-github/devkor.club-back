@@ -87,8 +87,18 @@ export class PostService {
     return post ? PostInfo.from(post) : null;
   }
 
-  async getPosts(page: number, size: number): Promise<Page<PostInfo>> {
-    const postPage = await this.postReader.findPaginated(page, size);
+  async getPosts(
+    page: number,
+    size: number,
+    position?: Position,
+    tags?: string[]
+  ): Promise<Page<PostInfo>> {
+    const postPage = await this.postReader.findPaginated(
+      page,
+      size,
+      position,
+      tags
+    );
     const postInfos = postPage.items.map(PostInfo.from);
     return new Page(postInfos, postPage.total, page, size);
   }

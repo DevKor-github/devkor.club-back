@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { MikroOrmModule } from "@mikro-orm/nestjs";
 import { PostEntity } from "@domains/post/infrastructures/mikro-orm/post.entity";
 import { MikroOrmPostReader } from "@domains/post/infrastructures/mikro-orm/post.reader";
-import { MikroPostStore } from "@domains/post/infrastructures/mikro-orm/post.store";
+import { MikroOrmPostStore } from "@domains/post/infrastructures/mikro-orm/post.store";
 import { POST_READER } from "@domains/post/post.reader";
 import { POST_STORE } from "@domains/post/post.store";
 import { PostService } from "@domains/post/post.service";
@@ -16,7 +16,7 @@ import { PostService } from "@domains/post/post.service";
     },
     {
       provide: POST_STORE,
-      useClass: MikroPostStore,
+      useClass: MikroOrmPostStore,
     },
     PostService,
   ],

@@ -15,8 +15,13 @@ export class BlogFacade {
     private readonly em: EntityManager
   ) {}
 
-  async getPosts(page: number, size: number): Promise<Page<PostInfo>> {
-    return this.postService.getPosts(page, size);
+  async getPosts(
+    page: number,
+    size: number,
+    position?: Position,
+    tags?: string[]
+  ): Promise<Page<PostInfo>> {
+    return this.postService.getPosts(page, size, position, tags);
   }
 
   async getPost(id: string): Promise<PostInfo> {

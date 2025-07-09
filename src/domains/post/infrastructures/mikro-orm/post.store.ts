@@ -5,7 +5,7 @@ import { EntityRepository } from "@mikro-orm/core";
 import { PostEntity } from "@domains/post/infrastructures/mikro-orm/post.entity";
 import { PostMapper } from "@domains/post/infrastructures/mikro-orm/post.mapper";
 
-export class MikroPostStore implements PostStore {
+export class MikroOrmPostStore implements PostStore {
   constructor(
     @InjectRepository(PostEntity)
     private readonly postRepository: EntityRepository<PostEntity>
