@@ -12,6 +12,7 @@ import { POST_READER, PostReader } from "@domains/post/post.reader";
 import { POST_STORE, PostStore } from "@domains/post/post.store";
 import { Position } from "@common/shared/enums/position.enum";
 import { Result } from "@common/shared/core/domains/result";
+import { Dayjs } from "dayjs";
 
 @Injectable()
 export class PostService {
@@ -41,6 +42,7 @@ export class PostService {
       position: Position;
       tags: string[];
       coverImageUrl: string | null;
+      createdAt: Dayjs;
     }
   ): Promise<PostInfo> {
     const post = await this.postReader.findById(id);
@@ -53,6 +55,7 @@ export class PostService {
       post.updatePosition(props.position),
       post.overwriteTags(props.tags),
       post.updateCoverImageUrl(props.coverImageUrl),
+      post.reviseCreatedAt(props.createdAt),
     ];
     if (Result.getFailResultIfExist(results)) {
       throw new BadRequestException(
@@ -64,6 +67,15 @@ export class PostService {
   }
 
   async getPostById(id: PostId): Promise<PostInfo> {
+    const post = await this.postReader.findById(id);
+    if (!post) {
+      throw new NotFoundException("Post not found");
+    }
+    return PostInfo.from(post);
+  }
+
+  async viewPost(id: PostId): Promise<PostInfo> {
+    await this.postReader.view(id);
     const post = await this.postReader.findById(id);
     if (!post) {
       throw new NotFoundException("Post not found");

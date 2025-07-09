@@ -3,7 +3,7 @@ import { PostReader } from "@domains/post/post.reader";
 import { Post } from "@domains/post/models/post";
 import { PostId } from "@common/shared/identifiers/postId";
 import { InjectRepository } from "@mikro-orm/nestjs";
-import { EntityRepository, FilterQuery } from "@mikro-orm/core";
+import { EntityRepository, FilterQuery, raw } from "@mikro-orm/core";
 import { Page } from "@common/shared/core/page";
 import { PostEntity } from "@domains/post/infrastructures/mikro-orm/post.entity";
 import { PostMapper } from "@domains/post/infrastructures/mikro-orm/post.mapper";
@@ -52,5 +52,12 @@ export class MikroOrmPostReader implements PostReader {
   async findById(id: PostId): Promise<Post | null> {
     const entity = await this.postRepository.findOne({ id: id.getString() });
     return entity ? PostMapper.toDomain(entity) : null;
+  }
+
+  async view(id: PostId): Promise<void> {
+    await this.postRepository.nativeUpdate(
+      { id: id.getString() },
+      { viewCount: raw("view_count + 1") }
+    );
   }
 }

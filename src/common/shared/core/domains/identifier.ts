@@ -1,5 +1,5 @@
 export class Identifier<T> {
-  constructor(private readonly value: T) {
+  public constructor(private readonly value: T) {
     this.value = value;
   }
 
@@ -25,9 +25,5 @@ export class Identifier<T> {
 
   getNumber(): number {
     return Number(this.value);
-  }
-
-  isNewIdentifier(): boolean {
-    return this.value === 0;
   }
 }

@@ -32,7 +32,7 @@ export class GetPostsDto {
   @ApiProperty({
     description: "포지션 필터",
     enum: Position,
-    example: Position.FE,
+    example: Position.BE,
     required: false,
   })
   @IsOptional()
@@ -42,8 +42,8 @@ export class GetPostsDto {
   @ApiProperty({
     description:
       "태그 필터 (복수 입력, 하나라도 포함되면 조회) ex: ?tags=NestJS&tags=React or tags=NestJS,React",
-    example: "NestJS,React",
     required: false,
+    example: ["Spring", "Kotlin", "NestJS"],
   })
   @IsOptional()
   @IsString({ each: true })

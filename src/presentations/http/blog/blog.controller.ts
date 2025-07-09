@@ -7,14 +7,15 @@ import {
   Get,
   Query,
   Param,
-  ParseUUIDPipe,
+  Ip,
 } from "@nestjs/common";
-import { SynchronizeWeeklyILearnedRequest } from "@presentations/http/blog/dtos/synchronizeWeeklyILearned.dto";
 import { PostResponseModel } from "@presentations/http/blog/dtos/models/post.response-model";
 import { ApiDoc } from "@common/shared/response/apiResponse.decorator";
 import { ControllerResponse } from "@common/shared/response/controller.response";
 import { GetPostsDto } from "./dtos/getPosts.dto";
 import { PostPageResponseModel } from "./dtos/models/post-page.response-model";
+import { SyncBlogPostRequest } from "@presentations/http/blog/dtos/synchronizeBlogPost.dto";
+import { PostId } from "@common/shared/identifiers/postId";
 
 @Controller("blog")
 export class BlogController {
@@ -47,7 +48,8 @@ export class BlogController {
 
   @ApiDoc({
     summary: "게시물 단일 조회",
-    description: "ID로 게시물을 조회합니다.",
+    description:
+      "ID로 게시물을 조회합니다. 조회수가 증가합니다. (동일 IP당 시간 제한)",
     successType: PostResponseModel,
     errorResponses: [
       { status: HttpStatus.NOT_FOUND, description: "게시물을 찾을 수 없음" },
@@ -55,28 +57,29 @@ export class BlogController {
   })
   @Get("posts/:id")
   async getPost(
-    @Param("id", ParseUUIDPipe) id: string
+    @Param("id") id: string,
+    @Ip() clientIp: string
   ): Promise<ControllerResponse<PostResponseModel>> {
-    const postInfo = await this.blogService.getPost(id);
+    const postInfo = await this.blogService.viewPost(new PostId(id), clientIp);
     return ControllerResponse.success(PostResponseModel.fromPostInfo(postInfo));
   }
 
   @ApiDoc({
-    summary: "Weekly I Learned 동기화",
-    description:
-      "Notion에서 Weekly I Learned 데이터를 가져와 블로그 포스트로 동기화합니다",
+    summary: "외부 소스 데이터 동기화",
+    description: "외부 소스 데이터를 가져와 블로그에 게시물로 동기화합니다.",
     successType: [PostResponseModel],
     errorResponses: [
       { status: HttpStatus.NOT_FOUND, description: "데이터를 찾을 수 없음" },
       { status: HttpStatus.CONFLICT, description: "중복된 데이터" },
     ],
   })
-  @Post("posts/sync/weekly-i-learned")
-  async synchronizeWeeklyILearned(
-    @Body() body: SynchronizeWeeklyILearnedRequest
+  @Post("posts/sync")
+  async syncBlogPost(
+    @Body() body: SyncBlogPostRequest
   ): Promise<ControllerResponse<PostResponseModel[]>> {
-    const postInfos = await this.blogService.synchronizeWeeklyILearned(
-      body.startDate
+    const postInfos = await this.blogService.syncBlogPost(
+      body.startDate,
+      body.type
     );
     return ControllerResponse.success(
       PostResponseModel.fromPostInfoList(postInfos)

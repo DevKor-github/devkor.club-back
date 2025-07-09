@@ -6,8 +6,4 @@ export class PostId extends UniqueEntityId {
   constructor(id?: string | number) {
     super(id);
   }
-
-  public static create(id: string): PostId {
-    return new PostId(id);
-  }
 }

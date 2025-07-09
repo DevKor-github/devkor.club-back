@@ -14,5 +14,6 @@ export interface PostReader {
     tags?: string[]
   ): Promise<Page<Post>>;
   findById(id: PostId): Promise<Post | null>;
+  view(id: PostId): Promise<void>;
   findByTitle(title: string): Promise<Post | null>;
 }

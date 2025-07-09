@@ -13,10 +13,6 @@ export abstract class DomainEntity<Props extends DomainEntityProps> {
     this.props = props;
   }
 
-  public isNew(): boolean {
-    return this._id.isNewIdentifier();
-  }
-
   get id(): UniqueEntityId {
     return this._id;
   }

@@ -5,7 +5,7 @@ export class UniqueEntityId extends Identifier<string | number> {
   private static readonly EPOCH = 1609459200000; // 2021-01-01 기준
   private static readonly snowflake = new Snowflake(UniqueEntityId.EPOCH);
 
-  constructor(id?: string | number) {
+  public constructor(id?: string | number) {
     if (!id) {
       const envWorkerId = process.env.WORKER_ID;
       // 없을 경우 없이 생성

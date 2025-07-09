@@ -2,7 +2,8 @@ import { AggregateRoot } from "@common/shared/core/domains/aggregateRoot";
 import { Result } from "@common/shared/core/domains/result";
 import { Position } from "@common/shared/enums/position.enum";
 import { PostId } from "@common/shared/identifiers/postId";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import { Dayjs } from "dayjs";
 
 export interface PostNewProps {
   title: string;
@@ -47,10 +48,6 @@ export class Post extends AggregateRoot<PostProps> {
   public validate(): Result<Post> {
     if (this.props.title.length < 2) {
       return Result.fail("Title must be at least 1 character long");
-    }
-
-    if (this.props.content.length < 2) {
-      return Result.fail("Content must be at least 1 character long");
     }
 
     if (this.props.tags.length > 10) {
@@ -104,6 +101,12 @@ export class Post extends AggregateRoot<PostProps> {
 
   public updateCoverImageUrl(coverImageUrl: string | null): Result<Post> {
     this.props.coverImageUrl = coverImageUrl;
+    return this.validate();
+  }
+
+  public reviseCreatedAt(createdAt: Dayjs): Result<Post> {
+    this.props.createdAt = createdAt;
+    this.props.updatedAt = dayjs();
     return this.validate();
   }
 
