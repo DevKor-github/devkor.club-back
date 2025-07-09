@@ -1,9 +1,9 @@
-import { Module } from "@nestjs/common";
-import { BlogFacade } from "./blog.facade";
+import { BlogPostSynchronizer } from "@applications/blog/blogPost.synchronizer";
+import { ViewCountCacheManager } from "@applications/blog/viewCountCache.manager";
 import { WeeklyILearnedModule } from "@applications/blog/weeklyILearned/weeklyILearned.module";
 import { PostModule } from "@domains/post/post.module";
-import { ViewCountCacheManager } from "@applications/blog/viewCountCache.manager";
-import { BlogPostSynchronizer } from "@applications/blog/blogPost.synchronizer";
+import { Module } from "@nestjs/common";
+import { BlogFacade } from "./blog.facade";
 
 @Module({
   imports: [WeeklyILearnedModule, PostModule],

@@ -12,5 +12,5 @@ export class ParseIdPipe<T extends UniqueEntityId>
 }
 
 export const parseIdPipe = <T extends UniqueEntityId>(
-  idClass: new (id: string) => T
+  idClass: new (id: string) => T,
 ) => new ParseIdPipe(idClass);

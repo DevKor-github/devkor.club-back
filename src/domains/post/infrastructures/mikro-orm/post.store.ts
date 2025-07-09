@@ -1,14 +1,14 @@
-import { Post } from "@domains/post/models/post";
-import { PostStore } from "@domains/post/post.store";
-import { InjectRepository } from "@mikro-orm/nestjs";
-import { EntityRepository } from "@mikro-orm/core";
 import { PostEntity } from "@domains/post/infrastructures/mikro-orm/post.entity";
 import { PostMapper } from "@domains/post/infrastructures/mikro-orm/post.mapper";
+import { Post } from "@domains/post/models/post";
+import { PostStore } from "@domains/post/post.store";
+import { EntityRepository } from "@mikro-orm/core";
+import { InjectRepository } from "@mikro-orm/nestjs";
 
 export class MikroOrmPostStore implements PostStore {
   constructor(
     @InjectRepository(PostEntity)
-    private readonly postRepository: EntityRepository<PostEntity>
+    private readonly postRepository: EntityRepository<PostEntity>,
   ) {}
 
   async save(post: Post): Promise<void> {
@@ -32,7 +32,7 @@ export class MikroOrmPostStore implements PostStore {
       (await this.postRepository.find({ id: { $in: postIds } })).map((e) => [
         e.id,
         e,
-      ])
+      ]),
     );
 
     for (const post of posts) {

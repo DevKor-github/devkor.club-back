@@ -28,9 +28,7 @@ export class Result<T> {
     value: void;
     error?: undefined;
   };
-  public static ok<U>(
-    value: U
-  ): Result<U> & {
+  public static ok<U>(value: U): Result<U> & {
     isSuccess: true;
     isFailure: false;
     value: U;
@@ -42,7 +40,7 @@ export class Result<T> {
   }
 
   public static fail<U = never>(
-    error: string
+    error: string,
   ): Result<U> & {
     isSuccess: false;
     isFailure: true;

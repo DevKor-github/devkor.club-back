@@ -3,15 +3,15 @@ import { HttpExceptionFilter } from "@common/system/filters/httpException.filter
 import { InternalErrorFilter } from "@common/system/filters/internal-error.filter";
 import { NotAcceptableException, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-import cors from "cors";
 import {
   DocumentBuilder,
   SwaggerDocumentOptions,
   SwaggerModule,
 } from "@nestjs/swagger";
+import cors from "cors";
 import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -24,7 +24,7 @@ async function bootstrap() {
     cors({
       origin: ["http://localhost:5173", "https://devkor.club"],
       // TODO: 배포 후 CORS 설정 변경
-    })
+    }),
   );
   app.useGlobalPipes(
     new ValidationPipe({
@@ -33,15 +33,15 @@ async function bootstrap() {
         const messages = errors
           .map((error) => {
             return `<${error.property}> ${Object.values(error.constraints).join(
-              " "
+              " ",
             )}`;
           })
           .join(" ");
         return new NotAcceptableException(
-          `입력값이 유효하지 않습니다 - ${messages}`
+          `입력값이 유효하지 않습니다 - ${messages}`,
         );
       },
-    })
+    }),
   );
 
   const config = new DocumentBuilder()

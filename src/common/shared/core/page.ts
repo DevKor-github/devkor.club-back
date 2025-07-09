@@ -3,7 +3,7 @@ export class Page<T> {
     public readonly items: T[],
     public readonly total: number,
     public readonly page: number,
-    public readonly size: number
+    public readonly size: number,
   ) {}
 
   get totalPages(): number {
@@ -22,7 +22,7 @@ export class Page<T> {
     items: T[],
     total: number,
     page: number,
-    size: number
+    size: number,
   ): Page<T> {
     return new Page(items, total, page, size);
   }

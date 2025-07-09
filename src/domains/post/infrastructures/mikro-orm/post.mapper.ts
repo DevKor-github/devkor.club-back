@@ -1,8 +1,8 @@
-import { InternalServerErrorException } from "@nestjs/common";
 import { PostId } from "@common/shared/identifiers/postId";
-import dayjs from "dayjs";
 import { PostEntity } from "@domains/post/infrastructures/mikro-orm/post.entity";
 import { Post } from "@domains/post/models/post";
+import { InternalServerErrorException } from "@nestjs/common";
+import dayjs from "dayjs";
 
 export class PostMapper {
   static toDomain(entity: PostEntity): Post {
@@ -19,7 +19,7 @@ export class PostMapper {
         updatedAt: dayjs(entity.updatedAt),
         deletedAt: entity.deletedAt ? dayjs(entity.deletedAt) : null,
       },
-      new PostId(entity.id)
+      new PostId(entity.id),
     );
 
     if (result.isFailure) {

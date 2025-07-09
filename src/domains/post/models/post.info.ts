@@ -1,7 +1,7 @@
-import { PostId } from "@common/shared/identifiers/postId";
-import { Post } from "./post";
-import { Dayjs } from "dayjs";
 import { Position } from "@common/shared/enums/position.enum";
+import { PostId } from "@common/shared/identifiers/postId";
+import { Dayjs } from "dayjs";
+import { Post } from "./post";
 
 export class PostInfo {
   constructor(
@@ -14,7 +14,7 @@ export class PostInfo {
     public readonly coverImageUrl: string | null,
     public readonly viewCount: number,
     public readonly createdAt: Dayjs,
-    public readonly updatedAt: Dayjs
+    public readonly updatedAt: Dayjs,
   ) {}
 
   static from(post: Post): PostInfo {
@@ -28,7 +28,7 @@ export class PostInfo {
       post.coverImageUrl,
       post.viewCount,
       post.createdAt,
-      post.updatedAt
+      post.updatedAt,
     );
   }
 }

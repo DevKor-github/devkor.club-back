@@ -1,12 +1,13 @@
-import { Position } from "@common/shared/enums/position.enum";
-import { PostReader } from "@domains/post/post.reader";
-import { Post } from "@domains/post/models/post";
-import { PostId } from "@common/shared/identifiers/postId";
-import { InjectRepository } from "@mikro-orm/nestjs";
-import { EntityRepository, FilterQuery, raw } from "@mikro-orm/core";
 import { Page } from "@common/shared/core/page";
+import { Position } from "@common/shared/enums/position.enum";
+import { PostSortBy } from "@domains/post/models/postSortBy.enum";
+import { PostId } from "@common/shared/identifiers/postId";
 import { PostEntity } from "@domains/post/infrastructures/mikro-orm/post.entity";
 import { PostMapper } from "@domains/post/infrastructures/mikro-orm/post.mapper";
+import { Post } from "@domains/post/models/post";
+import { PostReader } from "@domains/post/post.reader";
+import { EntityRepository, FilterQuery, raw } from "@mikro-orm/core";
+import { InjectRepository } from "@mikro-orm/nestjs";
 
 export class MikroOrmPostReader implements PostReader {
   constructor(
@@ -28,7 +29,8 @@ export class MikroOrmPostReader implements PostReader {
     page: number,
     limit: number,
     position?: Position,
-    tags?: string[]
+    tags?: string[],
+    sortBy: PostSortBy = PostSortBy.CREATED_AT
   ): Promise<Page<Post>> {
     const where: FilterQuery<PostEntity> = {};
 
@@ -43,7 +45,7 @@ export class MikroOrmPostReader implements PostReader {
     const [entities, total] = await this.postRepository.findAndCount(where, {
       offset: (page - 1) * limit,
       limit: limit,
-      orderBy: { createdAt: "DESC" },
+      orderBy: { [sortBy]: "DESC" },
     });
     const posts = entities.map((entity) => PostMapper.toDomain(entity));
     return new Page(posts, total, page, limit);

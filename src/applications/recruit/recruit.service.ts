@@ -1,16 +1,16 @@
 import {
-  position,
   createAnswerMap,
   deriveName,
+  position,
 } from "@common/shared/util/question";
 import { deriveCompleteMessage } from "@common/shared/util/sms";
 import { NotionService } from "@common/support/notion/notion.service";
 import { Injectable } from "@nestjs/common";
 import {
-  FrontendApplyRequestDto,
   BackendApplyRequestDto,
-  PmApplyRequestDto,
   DesignerApplyRequestDto,
+  FrontendApplyRequestDto,
+  PmApplyRequestDto,
 } from "@presentations/http/recruit/dtos";
 
 import axios from "axios";
@@ -22,7 +22,7 @@ export class RecruitService {
 
   messageService = new coolsms(
     process.env.MESSAGE_API_KEY,
-    process.env.MESSAGE_API_SECRET
+    process.env.MESSAGE_API_SECRET,
   );
 
   client = axios.create({
@@ -75,8 +75,8 @@ export class RecruitService {
     this.notificationToChannel(
       `FE 지원 https://www.notion.so/overthestream/${result.id.replace(
         /-/g,
-        ""
-      )}`
+        "",
+      )}`,
     );
     const message = deriveCompleteMessage("FE 개발자", dto.name);
     this.sendSMS(dto.phone.split("-").join(""), message);
@@ -100,8 +100,8 @@ export class RecruitService {
     this.notificationToChannel(
       `BE 지원 https://www.notion.so/overthestream/${result.id.replace(
         /-/g,
-        ""
-      )}`
+        "",
+      )}`,
     );
     const message = deriveCompleteMessage("BE 개발자", dto.name);
     this.sendSMS(dto.phone.split("-").join(""), message);
@@ -125,8 +125,8 @@ export class RecruitService {
     this.notificationToChannel(
       `PM 지원 https://www.notion.so/overthestream/${result.id.replace(
         /-/g,
-        ""
-      )}`
+        "",
+      )}`,
     );
     const message = deriveCompleteMessage("PM", dto.name);
     this.sendSMS(dto.phone.split("-").join(""), message);
@@ -152,8 +152,8 @@ export class RecruitService {
     this.notificationToChannel(
       `PD 지원 https://www.notion.so/overthestream/${result.id.replace(
         /-/g,
-        ""
-      )}`
+        "",
+      )}`,
     );
     const message = deriveCompleteMessage("PD", dto.name);
     this.sendSMS(dto.phone.split("-").join(""), message);
@@ -177,14 +177,14 @@ export class RecruitService {
     for (const [key, value] of Object.entries(answerMap)) {
       children.push(
         this.notionService.createHeadingBlock(key, 2),
-        this.notionService.createParagraphBlock(value)
+        this.notionService.createParagraphBlock(value),
       );
     }
 
     return await this.notionService.createPage(
       this.dbIdMap[type],
       properties,
-      children
+      children,
     );
   }
 

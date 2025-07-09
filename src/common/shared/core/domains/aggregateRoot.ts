@@ -6,7 +6,7 @@ export type AggregateRootProps = {
 };
 
 export abstract class AggregateRoot<
-  T extends AggregateRootProps
+  T extends AggregateRootProps,
 > extends DomainEntity<T> {
   protected constructor(props: T, id: UniqueEntityId) {
     super(props, id);

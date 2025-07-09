@@ -24,7 +24,7 @@ export class NotionDatabaseService {
 
   async queryDatabase(
     databaseId: string,
-    options: NotionDatabaseQueryOptions = {}
+    options: NotionDatabaseQueryOptions = {},
   ): Promise<NotionDatabaseQueryResult> {
     const { filter, sorts, startCursor, pageSize = 100 } = options;
 
@@ -50,7 +50,7 @@ export class NotionDatabaseService {
 
   async getAllPages(
     databaseId: string,
-    options: Omit<NotionDatabaseQueryOptions, "startCursor" | "pageSize"> = {}
+    options: Omit<NotionDatabaseQueryOptions, "startCursor" | "pageSize"> = {},
   ): Promise<any[]> {
     const allPages = [];
     let startCursor: string | undefined;
@@ -75,7 +75,7 @@ export class NotionDatabaseService {
     databaseId: string,
     propertyName: string,
     value: string | number | boolean,
-    options: Omit<NotionDatabaseQueryOptions, "filter"> = {}
+    options: Omit<NotionDatabaseQueryOptions, "filter"> = {},
   ): Promise<NotionDatabaseQueryResult> {
     const filter = this.createPropertyFilter(propertyName, value);
     return this.queryDatabase(databaseId, { ...options, filter });
@@ -84,7 +84,7 @@ export class NotionDatabaseService {
   async searchPages(
     databaseId: string,
     searchQuery: string,
-    options: Omit<NotionDatabaseQueryOptions, "filter"> = {}
+    options: Omit<NotionDatabaseQueryOptions, "filter"> = {},
   ): Promise<NotionDatabaseQueryResult> {
     const filter = {
       or: [
@@ -115,7 +115,7 @@ export class NotionDatabaseService {
     databaseId: string,
     page: number,
     limit: number,
-    options: Omit<NotionDatabaseQueryOptions, "startCursor" | "pageSize"> = {}
+    options: Omit<NotionDatabaseQueryOptions, "startCursor" | "pageSize"> = {},
   ): Promise<{
     pages: any[];
     totalCount: number;
@@ -148,7 +148,7 @@ export class NotionDatabaseService {
 
   private createPropertyFilter(
     propertyName: string,
-    value: string | number | boolean
+    value: string | number | boolean,
   ) {
     if (typeof value === "string") {
       return {
@@ -182,7 +182,7 @@ export class NotionDatabaseService {
 
   createSortConfig(
     propertyName: string,
-    direction: "ascending" | "descending" = "ascending"
+    direction: "ascending" | "descending" = "ascending",
   ) {
     return {
       property: propertyName,
@@ -193,7 +193,7 @@ export class NotionDatabaseService {
   createDateFilter(
     propertyName: string,
     operator: "equals" | "before" | "after" | "on_or_before" | "on_or_after",
-    date: string
+    date: string,
   ) {
     return {
       property: propertyName,

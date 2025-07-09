@@ -1,3 +1,4 @@
+import { ControllerResponse } from "@common/shared/response/controller.response";
 import {
   type ArgumentsHost,
   Catch,
@@ -7,7 +8,6 @@ import {
 } from "@nestjs/common";
 import axios from "axios";
 import type { Response } from "express";
-import { ControllerResponse } from "@common/shared/response/controller.response";
 
 @Catch()
 export class InternalErrorFilter implements ExceptionFilter {
@@ -40,7 +40,7 @@ export class InternalErrorFilter implements ExceptionFilter {
         .then(async () => {
           exception.message &&
             (await this.notificationToChannel(
-              `message : ${exception.message}`
+              `message : ${exception.message}`,
             ));
         })
         .then(async () => {
@@ -54,11 +54,11 @@ export class InternalErrorFilter implements ExceptionFilter {
         timestamp: new Date().toISOString(),
       },
       "Internal Server Error",
-      HttpStatus.INTERNAL_SERVER_ERROR
+      HttpStatus.INTERNAL_SERVER_ERROR,
     );
     this.logger.error(
       `[${HttpStatus.INTERNAL_SERVER_ERROR}] ${exception.name} - ${exception.message}`,
-      exception.stack
+      exception.stack,
     );
 
     response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(errorResponse);

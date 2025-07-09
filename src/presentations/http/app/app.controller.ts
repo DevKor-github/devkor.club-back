@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 
-import { CreateFileUploadPresignedUrlDto } from "@presentations/http/app/dtos/presignedUrl.dto";
-import { S3Service } from "@common/support/s3/s3.service";
-import { ControllerResponse } from "@common/shared/response/controller.response";
 import { ApiDoc } from "@common/shared/response/apiResponse.decorator";
+import { ControllerResponse } from "@common/shared/response/controller.response";
+import { S3Service } from "@common/support/s3/s3.service";
+import { CreateFileUploadPresignedUrlDto } from "@presentations/http/app/dtos/presignedUrl.dto";
 
 @Controller()
 export class AppController {
@@ -17,7 +17,7 @@ export class AppController {
   @Get()
   getHello(): ControllerResponse<string> {
     return ControllerResponse.success(
-      new Date().toISOString().substring(0, 10)
+      new Date().toISOString().substring(0, 10),
     );
   }
 
@@ -28,11 +28,11 @@ export class AppController {
   })
   @Post("/presigned-url")
   async createFileUploadPresignedUrl(
-    @Body() createFileUploadPresignedUrlDto: CreateFileUploadPresignedUrlDto
+    @Body() createFileUploadPresignedUrlDto: CreateFileUploadPresignedUrlDto,
   ): Promise<ControllerResponse<string>> {
     const { fileName } = createFileUploadPresignedUrlDto;
     return ControllerResponse.success(
-      await this.s3Service.createFileUploadPresignedUrl(fileName)
+      await this.s3Service.createFileUploadPresignedUrl(fileName),
     );
   }
 }

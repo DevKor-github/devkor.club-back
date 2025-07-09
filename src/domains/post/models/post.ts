@@ -33,7 +33,7 @@ export class Post extends AggregateRoot<PostProps> {
   }
 
   static createNew(props: PostNewProps): Result<Post> {
-    return this.create(
+    return Post.create(
       {
         ...props,
         viewCount: 0,
@@ -41,7 +41,7 @@ export class Post extends AggregateRoot<PostProps> {
         updatedAt: dayjs(),
         deletedAt: null,
       },
-      new PostId()
+      new PostId(),
     );
   }
 

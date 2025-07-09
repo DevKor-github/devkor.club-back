@@ -5,12 +5,12 @@ import {
   GetPageResponse,
   UpdatePageResponse,
 } from "@notionhq/client";
-import { NotionPropertyFactory } from "./notion-property.factory";
 import { NotionBlockFactory } from "./notion-block.factory";
 import {
   NotionDatabaseQueryResult,
   NotionDatabaseService,
 } from "./notion-database.service";
+import { NotionPropertyFactory } from "./notion-property.factory";
 
 @Injectable()
 export class NotionService {
@@ -21,13 +21,13 @@ export class NotionService {
   constructor(
     private readonly propertyFactory: NotionPropertyFactory,
     private readonly blockFactory: NotionBlockFactory,
-    private readonly databaseService: NotionDatabaseService
+    private readonly databaseService: NotionDatabaseService,
   ) {}
 
   async createPage(
     databaseId: string,
     properties: Record<string, any>,
-    children?: Array<any>
+    children?: Array<any>,
   ): Promise<CreatePageResponse> {
     return await this.notion.pages.create({
       parent: { database_id: databaseId },
@@ -120,7 +120,7 @@ export class NotionService {
     return this.blockFactory.createToggleBlock(content, children);
   }
 
-  createCodeBlock(content: string, language: string = "javascript") {
+  createCodeBlock(content: string, language = "javascript") {
     return this.blockFactory.createCodeBlock(content, language);
   }
 
@@ -128,7 +128,7 @@ export class NotionService {
     return this.blockFactory.createQuoteBlock(content);
   }
 
-  createCalloutBlock(content: string, icon: string = "💡") {
+  createCalloutBlock(content: string, icon = "💡") {
     return this.blockFactory.createCalloutBlock(content, icon);
   }
 
@@ -139,7 +139,7 @@ export class NotionService {
   // Database service methods delegation
   async queryDatabase(
     databaseId: string,
-    options: any = {}
+    options: any = {},
   ): Promise<NotionDatabaseQueryResult> {
     return this.databaseService.queryDatabase(databaseId, options);
   }
@@ -152,20 +152,20 @@ export class NotionService {
     databaseId: string,
     propertyName: string,
     value: string | number | boolean,
-    options: any = {}
+    options: any = {},
   ) {
     return this.databaseService.getPagesByProperty(
       databaseId,
       propertyName,
       value,
-      options
+      options,
     );
   }
 
   async searchPages(
     databaseId: string,
     searchQuery: string,
-    options: any = {}
+    options: any = {},
   ) {
     return this.databaseService.searchPages(databaseId, searchQuery, options);
   }
@@ -178,19 +178,19 @@ export class NotionService {
     databaseId: string,
     page: number,
     limit: number,
-    options: any = {}
+    options: any = {},
   ) {
     return this.databaseService.getPaginatedPages(
       databaseId,
       page,
       limit,
-      options
+      options,
     );
   }
 
   createSortConfig(
     propertyName: string,
-    direction: "ascending" | "descending" = "ascending"
+    direction: "ascending" | "descending" = "ascending",
   ) {
     return this.databaseService.createSortConfig(propertyName, direction);
   }
@@ -198,7 +198,7 @@ export class NotionService {
   createDateFilter(
     propertyName: string,
     operator: "equals" | "before" | "after" | "on_or_before" | "on_or_after",
-    date: string
+    date: string,
   ) {
     return this.databaseService.createDateFilter(propertyName, operator, date);
   }

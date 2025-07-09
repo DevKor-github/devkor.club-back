@@ -1,3 +1,4 @@
+import { ControllerResponse } from "@common/shared/response/controller.response";
 import {
   ArgumentsHost,
   Catch,
@@ -6,7 +7,6 @@ import {
   Logger,
 } from "@nestjs/common";
 import type { Response } from "express";
-import { ControllerResponse } from "@common/shared/response/controller.response";
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -26,7 +26,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         details: exception.getResponse(),
       },
       message,
-      status
+      status,
     );
 
     this.logger.error(`[${status}] ${name} - ${message}`, exception.stack);

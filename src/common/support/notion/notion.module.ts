@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
-import { NotionService } from "./notion.service";
-import { NotionPropertyFactory } from "./notion-property.factory";
 import { NotionBlockFactory } from "./notion-block.factory";
 import { NotionDatabaseService } from "./notion-database.service";
+import { NotionPropertyFactory } from "./notion-property.factory";
+import { NotionService } from "./notion.service";
 
 @Module({
   providers: [

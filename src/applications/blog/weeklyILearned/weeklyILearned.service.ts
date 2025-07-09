@@ -1,16 +1,16 @@
-import { NotionService } from "@common/support/notion/notion.service";
-import { Injectable } from "@nestjs/common";
 import {
   WeeklyILearnedPage,
   WeeklyILearnedPaginationQuery,
 } from "@applications/blog/weeklyILearned/models/weeklyILearned.dto";
 import {
-  WeeklyILearnedSimplePaginationResult,
-  WeeklyILearnedSimple,
+  WeeklyILearnedContentResult,
   WeeklyILearnedPaginationInfo,
   WeeklyILearnedPaginationResult,
-  WeeklyILearnedContentResult,
+  WeeklyILearnedSimple,
+  WeeklyILearnedSimplePaginationResult,
 } from "@applications/blog/weeklyILearned/models/weeklyILearned.types";
+import { NotionService } from "@common/support/notion/notion.service";
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class WeeklyILearnedService {
@@ -43,7 +43,7 @@ export class WeeklyILearnedService {
   }
 
   async getAllWeeklyILearnedSimple(
-    startDate: string
+    startDate: string,
   ): Promise<WeeklyILearnedSimple[]> {
     let allItems: WeeklyILearnedSimple[] = [];
     let hasMore = true;
@@ -66,20 +66,24 @@ export class WeeklyILearnedService {
     return allItems;
   }
 
-  async getWeeklyILearnedContent(pageId: string): Promise<WeeklyILearnedContentResult> {
+  async getWeeklyILearnedContent(
+    pageId: string,
+  ): Promise<WeeklyILearnedContentResult> {
     const { results } = await this.notionService.retrieveBlockChildren(pageId);
     let coverImage: string | null = null;
-    const content = results.map((block: any) => {
-      const markdown = this.blockToMarkdown(block);
-      if (block.type === 'image' && !coverImage) {
-        if (block.image.type === 'external') {
-          coverImage = block.image.external.url;
-        } else if (block.image.type === 'file') {
-          coverImage = block.image.file.url;
+    const content = results
+      .map((block: any) => {
+        const markdown = this.blockToMarkdown(block);
+        if (block.type === "image" && !coverImage) {
+          if (block.image.type === "external") {
+            coverImage = block.image.external.url;
+          } else if (block.image.type === "file") {
+            coverImage = block.image.file.url;
+          }
         }
-      }
-      return markdown;
-    }).join("\n");
+        return markdown;
+      })
+      .join("\n");
 
     return { content, coverImage };
   }
@@ -97,16 +101,26 @@ export class WeeklyILearnedService {
       case "heading_3":
         return `### ${this.getRichTextContent(block.heading_3.rich_text)}`;
       case "bulleted_list_item":
-        return `* ${this.getRichTextContent(block.bulleted_list_item.rich_text)}`;
+        return `* ${this.getRichTextContent(
+          block.bulleted_list_item.rich_text,
+        )}`;
       case "numbered_list_item":
-        return `1. ${this.getRichTextContent(block.numbered_list_item.rich_text)}`;
+        return `1. ${this.getRichTextContent(
+          block.numbered_list_item.rich_text,
+        )}`;
       case "quote":
         return `> ${this.getRichTextContent(block.quote.rich_text)}`;
       case "code":
-        return `\`\`\`${block.code.language}\n${this.getRichTextContent(block.code.rich_text)}\n\`\`\``;
-      case "image":
-        const imageUrl = block.image.type === 'external' ? block.image.external.url : block.image.file.url;
+        return `\`\`\`${block.code.language}\n${this.getRichTextContent(
+          block.code.rich_text,
+        )}\n\`\`\``;
+      case "image": {
+        const imageUrl =
+          block.image.type === "external"
+            ? block.image.external.url
+            : block.image.file.url;
         return `![image](${imageUrl})`;
+      }
       default:
         return "";
     }
@@ -120,7 +134,7 @@ export class WeeklyILearnedService {
   }
 
   async getPaginatedWeeklyILearned(
-    query: WeeklyILearnedPaginationQuery
+    query: WeeklyILearnedPaginationQuery,
   ): Promise<WeeklyILearnedPaginationResult> {
     const {
       page = 1,
@@ -153,14 +167,14 @@ export class WeeklyILearnedService {
       this.WEEKLY_I_LEARNED_DATABASE_ID,
       page,
       limit,
-      { filter: filters, sorts }
+      { filter: filters, sorts },
     );
 
     // 상세한 페이징 정보 생성
     const paginationInfo = this.createPaginationInfo(
       result.totalCount,
       result.currentPage,
-      limit
+      limit,
     );
 
     return {
@@ -171,7 +185,7 @@ export class WeeklyILearnedService {
   }
 
   async getPaginatedWeeklyILearnedSimple(
-    query: WeeklyILearnedPaginationQuery
+    query: WeeklyILearnedPaginationQuery,
   ): Promise<WeeklyILearnedSimplePaginationResult> {
     const result = await this.getPaginatedWeeklyILearned(query);
 
@@ -187,7 +201,7 @@ export class WeeklyILearnedService {
   private createPaginationInfo(
     totalCount: number,
     currentPage: number,
-    pageSize: number
+    pageSize: number,
   ): WeeklyILearnedPaginationInfo {
     const totalPages = Math.ceil(totalCount / pageSize);
     const hasNext = currentPage < totalPages;
@@ -219,7 +233,7 @@ export class WeeklyILearnedService {
 
   private generatePageNumbers(
     currentPage: number,
-    totalPages: number
+    totalPages: number,
   ): number[] {
     const delta = 2; // 현재 페이지 좌우로 보여줄 페이지 수
     const range = [];
@@ -256,7 +270,7 @@ export class WeeklyILearnedService {
 
   private createSortConfig(
     sortBy: "created_time" | "last_edited_time" | "제목",
-    sortOrder: "ascending" | "descending"
+    sortOrder: "ascending" | "descending",
   ) {
     // 시스템 속성들은 timestamp로 정렬
     if (sortBy === "created_time" || sortBy === "last_edited_time") {
@@ -285,25 +299,25 @@ export class WeeklyILearnedService {
 
     if (filters.team) {
       filterConditions.push(
-        this.notionService.createSelectFilter("팀 이름", filters.team)
+        this.notionService.createSelectFilter("팀 이름", filters.team),
       );
     }
 
     if (filters.week) {
       filterConditions.push(
-        this.notionService.createSelectFilter("주차", filters.week)
+        this.notionService.createSelectFilter("주차", filters.week),
       );
     }
 
     if (filters.position) {
       filterConditions.push(
-        this.notionService.createSelectFilter("직군", filters.position)
+        this.notionService.createSelectFilter("직군", filters.position),
       );
     }
 
     if (filters.keyword) {
       filterConditions.push(
-        this.notionService.createMultiSelectFilter("키워드", filters.keyword)
+        this.notionService.createMultiSelectFilter("키워드", filters.keyword),
       );
     }
 
@@ -328,13 +342,13 @@ export class WeeklyILearnedService {
     // 여러 필터가 있을 경우 AND 조건으로 결합
     if (filterConditions.length === 0) {
       return undefined;
-    } else if (filterConditions.length === 1) {
-      return filterConditions[0];
-    } else {
-      return {
-        and: filterConditions,
-      };
     }
+    if (filterConditions.length === 1) {
+      return filterConditions[0];
+    }
+    return {
+      and: filterConditions,
+    };
   }
 
   private convertToSimple(page: WeeklyILearnedPage): WeeklyILearnedSimple {
@@ -349,13 +363,12 @@ export class WeeklyILearnedService {
 
     return {
       id: page.id,
-      title: page.properties["제목"].title[0]?.plain_text || "제목 없음",
-      author:
-        page.properties["작성자"].rich_text[0]?.plain_text || "작성자 없음",
+      title: page.properties.제목.title[0]?.plain_text || "제목 없음",
+      author: page.properties.작성자.rich_text[0]?.plain_text || "작성자 없음",
       team: page.properties["팀 이름"].select?.name || null,
-      week: page.properties["주차"].select?.name || null,
-      position: page.properties["직군"].select?.name || null,
-      keywords: page.properties["키워드"].multi_select.map((item) => item.name),
+      week: page.properties.주차.select?.name || null,
+      position: page.properties.직군.select?.name || null,
+      keywords: page.properties.키워드.multi_select.map((item) => item.name),
       createdTime: page.created_time,
       lastEditedTime: page.last_edited_time,
       url: page.url,

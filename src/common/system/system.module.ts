@@ -1,6 +1,6 @@
 import { LoggerMiddleware } from "@/common/system/middlewares/logger.middleware";
 import { MikroOrmModule } from "@mikro-orm/nestjs";
-import { Module, NestModule, MiddlewareConsumer } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 
 @Module({

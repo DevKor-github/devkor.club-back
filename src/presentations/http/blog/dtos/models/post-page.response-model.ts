@@ -1,6 +1,6 @@
+import { Page } from "@common/shared/core/page";
 import { ApiProperty } from "@nestjs/swagger";
 import { PostResponseModel } from "./post.response-model";
-import { Page } from "@common/shared/core/page";
 
 export class PostPageResponseModel extends Page<PostResponseModel> {
   @ApiProperty({ type: [PostResponseModel] })

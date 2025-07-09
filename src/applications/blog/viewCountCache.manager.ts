@@ -1,5 +1,5 @@
-import { Injectable } from "@nestjs/common";
 import { PostId } from "@common/shared/identifiers/postId";
+import { Injectable } from "@nestjs/common";
 
 interface ViewCountCache {
   lastViewedAt: number;

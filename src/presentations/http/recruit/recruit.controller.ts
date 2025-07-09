@@ -26,11 +26,11 @@ export class RecruitController {
   @Post("/application/fe")
   @HttpCode(HttpStatus.OK)
   async applyFrontend(
-    @Body() body: FrontendApplyRequestDto
+    @Body() body: FrontendApplyRequestDto,
   ): Promise<ControllerResponse<void>> {
     this.blockExpiredApplication();
     return ControllerResponse.success(
-      await this.recruitService.applyFrontend(body)
+      await this.recruitService.applyFrontend(body),
     );
   }
 
@@ -38,11 +38,11 @@ export class RecruitController {
   @ApiResponseType(undefined)
   @Post("/application/be")
   async applyBackend(
-    @Body() body: BackendApplyRequestDto
+    @Body() body: BackendApplyRequestDto,
   ): Promise<ControllerResponse<void>> {
     this.blockExpiredApplication();
     return ControllerResponse.success(
-      await this.recruitService.applyBackend(body)
+      await this.recruitService.applyBackend(body),
     );
   }
 
@@ -50,7 +50,7 @@ export class RecruitController {
   @ApiResponseType(undefined)
   @Post("/application/pm")
   async applyPm(
-    @Body() body: PmApplyRequestDto
+    @Body() body: PmApplyRequestDto,
   ): Promise<ControllerResponse<void>> {
     this.blockExpiredApplication();
     return ControllerResponse.success(await this.recruitService.applyPm(body));
@@ -60,11 +60,11 @@ export class RecruitController {
   @ApiResponseType(undefined)
   @Post("/application/de")
   async applyDesigner(
-    @Body() body: DesignerApplyRequestDto
+    @Body() body: DesignerApplyRequestDto,
   ): Promise<ControllerResponse<void>> {
     this.blockExpiredApplication();
     return ControllerResponse.success(
-      await this.recruitService.applyDesigner(body)
+      await this.recruitService.applyDesigner(body),
     );
   }
 }

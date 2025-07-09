@@ -81,7 +81,7 @@ export class NotionBlockFactory {
     };
   }
 
-  createCodeBlock(content: string, language: string = "javascript") {
+  createCodeBlock(content: string, language = "javascript") {
     return {
       object: "block",
       type: "code",
@@ -116,7 +116,7 @@ export class NotionBlockFactory {
     };
   }
 
-  createCalloutBlock(content: string, icon: string = "💡") {
+  createCalloutBlock(content: string, icon = "💡") {
     return {
       object: "block",
       type: "callout",

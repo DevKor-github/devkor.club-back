@@ -25,17 +25,14 @@ export class ControllerResponse<T> {
   })
   public readonly status: HttpStatus;
 
-  static success<T>(
-    data: T,
-    message: string = "success"
-  ): ControllerResponse<T> {
+  static success<T>(data: T, message = "success"): ControllerResponse<T> {
     return new ControllerResponse(data, message, HttpStatus.OK);
   }
 
   static error<T>(
     data: T,
-    message: string = "error",
-    status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR
+    message = "error",
+    status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
   ): ControllerResponse<T> {
     return new ControllerResponse(data, message, status);
   }

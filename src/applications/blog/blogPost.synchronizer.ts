@@ -1,16 +1,16 @@
-import { Injectable } from "@nestjs/common";
+import { BlogMapper } from "@applications/blog/blog.mapper";
 import { WeeklyILearnedService } from "@applications/blog/weeklyILearned/weeklyILearned.service";
+import { PostInfo } from "@domains/post/models/post.info";
 import { PostService } from "@domains/post/post.service";
 import { Transactional } from "@mikro-orm/core";
-import { PostInfo } from "@domains/post/models/post.info";
+import { Injectable } from "@nestjs/common";
 import dayjs from "dayjs";
-import { BlogMapper } from "@applications/blog/blog.mapper";
 
 @Injectable()
 export class BlogPostSynchronizer {
   constructor(
     private readonly postService: PostService,
-    private readonly weeklyILearnedService: WeeklyILearnedService
+    private readonly weeklyILearnedService: WeeklyILearnedService,
   ) {}
 
   @Transactional()

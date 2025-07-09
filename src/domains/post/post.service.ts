@@ -1,17 +1,18 @@
+import { Result } from "@common/shared/core/domains/result";
+import { Page } from "@common/shared/core/page";
+import { Position } from "@common/shared/enums/position.enum";
+import { PostSortBy } from "@domains/post/models/postSortBy.enum";
+import { PostId } from "@common/shared/identifiers/postId";
+import { Post, PostNewProps } from "@domains/post/models/post";
+import { PostInfo } from "@domains/post/models/post.info";
+import { POST_READER, PostReader } from "@domains/post/post.reader";
+import { POST_STORE, PostStore } from "@domains/post/post.store";
 import {
   BadRequestException,
   Inject,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { Page } from "@common/shared/core/page";
-import { PostId } from "@common/shared/identifiers/postId";
-import { Post, PostNewProps } from "@domains/post/models/post";
-import { PostInfo } from "@domains/post/models/post.info";
-import { POST_READER, PostReader } from "@domains/post/post.reader";
-import { POST_STORE, PostStore } from "@domains/post/post.store";
-import { Position } from "@common/shared/enums/position.enum";
-import { Result } from "@common/shared/core/domains/result";
 import { Dayjs } from "dayjs";
 
 @Injectable()
@@ -105,13 +106,15 @@ export class PostService {
     page: number,
     size: number,
     position?: Position,
-    tags?: string[]
+    tags?: string[],
+    sortBy?: PostSortBy
   ): Promise<Page<PostInfo>> {
     const postPage = await this.postReader.findPaginated(
       page,
       size,
       position,
-      tags
+      tags,
+      sortBy
     );
     const postInfos = postPage.items.map(PostInfo.from);
     return new Page(postInfos, postPage.total, page, size);

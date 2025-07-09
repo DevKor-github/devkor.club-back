@@ -1,6 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { PostInfo } from "@domains/post/models/post.info";
 import { Position } from "@common/shared/enums/position.enum";
+import { PostInfo } from "@domains/post/models/post.info";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class PostResponseModel {
   @ApiProperty({
@@ -78,7 +78,7 @@ export class PostResponseModel {
     coverImageUrl: string | null,
     viewCount: number,
     createdAt: string,
-    updatedAt: string
+    updatedAt: string,
   ) {
     this.id = id;
     this.title = title;
@@ -103,11 +103,13 @@ export class PostResponseModel {
       postInfo.coverImageUrl,
       postInfo.viewCount,
       postInfo.createdAt.toISOString(),
-      postInfo.updatedAt.toISOString()
+      postInfo.updatedAt.toISOString(),
     );
   }
 
   static fromPostInfoList(postInfoList: PostInfo[]): PostResponseModel[] {
-    return postInfoList.map((postInfo) => this.fromPostInfo(postInfo));
+    return postInfoList.map((postInfo) =>
+      PostResponseModel.fromPostInfo(postInfo),
+    );
   }
 }

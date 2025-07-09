@@ -1,11 +1,11 @@
 import { ControllerResponse } from "@common/shared/response/controller.response";
-import { applyDecorators, Type, HttpStatus, HttpCode } from "@nestjs/common";
+import { HttpCode, HttpStatus, Type, applyDecorators } from "@nestjs/common";
 import {
   ApiExtraModels,
   ApiOkResponse,
-  getSchemaPath,
   ApiOperation,
   ApiResponse,
+  getSchemaPath,
 } from "@nestjs/swagger";
 
 type SwaggerPrimitive =
@@ -41,7 +41,7 @@ const isPrimitive = (type: any): type is SwaggerPrimitive => {
 };
 
 export const ApiDoc = <TModel extends ApiDocSuccessType>(
-  options: ApiDocOptions<TModel>
+  options: ApiDocOptions<TModel>,
 ) => {
   const { summary, description, successType, errorResponses = [] } = options;
 
@@ -94,13 +94,13 @@ export const ApiDoc = <TModel extends ApiDocSuccessType>(
     decorators.push(
       ApiExtraModels(
         ControllerResponse,
-        ...(isVoid || isItemPrimitive ? [] : [itemType as Type<any>])
+        ...(isVoid || isItemPrimitive ? [] : [itemType as Type<any>]),
       ),
       ApiOkResponse({
         schema: successSchema,
         description: "성공 응답",
       }),
-      HttpCode(HttpStatus.OK)
+      HttpCode(HttpStatus.OK),
     );
   }
 
@@ -118,7 +118,7 @@ export const ApiDoc = <TModel extends ApiDocSuccessType>(
             status: { type: "number", example: status },
           },
         },
-      })
+      }),
     );
   });
 
@@ -126,9 +126,9 @@ export const ApiDoc = <TModel extends ApiDocSuccessType>(
 };
 
 export const ApiResponseType = <
-  TModel extends Type<any> | SwaggerPrimitive | void
+  TModel extends Type<any> | SwaggerPrimitive | void,
 >(
-  model: TModel
+  model: TModel,
 ) => {
   const isVoid = model === undefined || model === (void 0 as any);
   const isPrimitive = model === String || model === Number || model === Boolean;
@@ -150,14 +150,14 @@ export const ApiResponseType = <
   return applyDecorators(
     ApiExtraModels(
       ControllerResponse,
-      ...(isVoid || isPrimitive ? [] : [model as Type<any>])
+      ...(isVoid || isPrimitive ? [] : [model as Type<any>]),
     ),
-    ApiOkResponse({ schema })
+    ApiOkResponse({ schema }),
   );
 };
 
 function primitiveToSwaggerType(
-  type: SwaggerPrimitive
+  type: SwaggerPrimitive,
 ): "string" | "number" | "boolean" {
   switch (type) {
     case String:

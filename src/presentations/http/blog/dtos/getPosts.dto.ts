@@ -1,7 +1,8 @@
+import { Position } from "@common/shared/enums/position.enum";
+import { PostSortBy } from "@domains/post/models/postSortBy.enum";
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from "class-validator";
-import { Position } from "@common/shared/enums/position.enum";
 
 export class GetPostsDto {
   @ApiProperty({
@@ -57,4 +58,15 @@ export class GetPostsDto {
     return value;
   })
   tags?: string[];
+
+  @ApiProperty({
+    description: "정렬 기준 (내림차순)",
+    enum: PostSortBy,
+    example: PostSortBy.CREATED_AT,
+    required: false,
+    default: PostSortBy.CREATED_AT,
+  })
+  @IsOptional()
+  @IsEnum(PostSortBy)
+  sortBy?: PostSortBy = PostSortBy.CREATED_AT;
 }
