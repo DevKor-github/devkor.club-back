@@ -1,8 +1,9 @@
+import { Position } from "@common/shared/enums/position.enum";
 import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
 
-@Entity({ tableName: 'posts' })
+@Entity({ tableName: "posts" })
 export class PostEntity {
-  @PrimaryKey({ type: 'uuid', defaultRaw: 'uuid_generate_v4()' })
+  @PrimaryKey({ type: "uuid", defaultRaw: "uuid_generate_v4()" })
   id!: string;
 
   @Property()
@@ -12,7 +13,13 @@ export class PostEntity {
   content!: string;
 
   @Property()
-  authorId!: string;
+  author!: string;
+
+  @Property()
+  position!: Position;
+
+  @Property()
+  tags!: string[];
 
   @Property()
   createdAt: Date = new Date();
