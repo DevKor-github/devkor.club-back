@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 export class BlogPostSynchronizer {
   constructor(
     private readonly postService: PostService,
-    private readonly weeklyILearnedService: WeeklyILearnedService,
+    private readonly weeklyILearnedService: WeeklyILearnedService
   ) {}
 
   @Transactional()

@@ -19,7 +19,7 @@ import { PostPageResponseModel } from "./dtos/models/post-page.response-model";
 
 @Controller("blog")
 export class BlogController {
-  constructor(private readonly blogService: BlogFacade) {}
+  constructor(private readonly blogFacade: BlogFacade) {}
 
   @ApiDoc({
     summary: "게시물 페이지네이션 조회",
@@ -28,21 +28,21 @@ export class BlogController {
   })
   @Get("posts")
   async getPosts(
-    @Query() getPostsDto: GetPostsDto,
+    @Query() getPostsDto: GetPostsDto
   ): Promise<ControllerResponse<PostPageResponseModel>> {
     const { page, size, position, tags, sortBy } = getPostsDto;
-    const postPage = await this.blogService.getPosts(
+    const postPage = await this.blogFacade.getPosts(
       page ?? 1,
       size ?? 10,
       position,
       tags,
-      sortBy,
+      sortBy
     );
     const postResponsePage = new PostPageResponseModel(
       postPage.items.map(PostResponseModel.fromPostInfo),
       postPage.total,
       postPage.page,
-      postPage.size,
+      postPage.size
     );
     return ControllerResponse.success(postResponsePage);
   }
@@ -59,9 +59,9 @@ export class BlogController {
   @Get("posts/:id")
   async getPost(
     @Param("id") id: string,
-    @Ip() clientIp: string,
+    @Ip() clientIp: string
   ): Promise<ControllerResponse<PostResponseModel>> {
-    const postInfo = await this.blogService.viewPost(new PostId(id), clientIp);
+    const postInfo = await this.blogFacade.viewPost(new PostId(id), clientIp);
     return ControllerResponse.success(PostResponseModel.fromPostInfo(postInfo));
   }
 
@@ -76,14 +76,14 @@ export class BlogController {
   })
   @Post("posts/sync")
   async syncBlogPost(
-    @Body() body: SyncBlogPostRequest,
+    @Body() body: SyncBlogPostRequest
   ): Promise<ControllerResponse<PostResponseModel[]>> {
-    const postInfos = await this.blogService.syncBlogPost(
+    const postInfos = await this.blogFacade.syncBlogPost(
       body.startDate,
-      body.type,
+      body.type
     );
     return ControllerResponse.success(
-      PostResponseModel.fromPostInfoList(postInfos),
+      PostResponseModel.fromPostInfoList(postInfos)
     );
   }
 }

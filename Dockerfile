@@ -12,7 +12,7 @@ RUN yarn install
 COPY . .
 
 # 포트 노출
-EXPOSE 50051
+EXPOSE 3071
 
 # 실행 명령
 CMD ["yarn", "start"]

@@ -1,4 +1,4 @@
-import { IsPhoneNumber } from "@/common/shared/util/IsPhoneNumber.decorator";
+import { IsPhoneNumber } from "@common/shared/util/isPhoneNumber";
 import {
   IsEmail,
   IsInt,

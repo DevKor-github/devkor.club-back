@@ -19,6 +19,7 @@ export interface PostNewProps {
 export interface PostProps extends PostNewProps {
   viewCount: number;
   createdAt: Dayjs;
+  // NOTE: db 영속화 시 자동 수정되기에 굳이 조작할 필요 없음
   updatedAt: Dayjs;
   deletedAt: Dayjs | null;
 }
@@ -41,7 +42,7 @@ export class Post extends AggregateRoot<PostProps> {
         updatedAt: dayjs(),
         deletedAt: null,
       },
-      new PostId(),
+      new PostId()
     );
   }
 
@@ -106,7 +107,6 @@ export class Post extends AggregateRoot<PostProps> {
 
   public reviseCreatedAt(createdAt: Dayjs): Result<Post> {
     this.props.createdAt = createdAt;
-    this.props.updatedAt = dayjs();
     return this.validate();
   }
 
