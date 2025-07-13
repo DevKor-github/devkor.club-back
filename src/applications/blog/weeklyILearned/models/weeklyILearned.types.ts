@@ -42,8 +42,6 @@ export interface WeeklyILearnedSimple {
   id: string;
   title: string;
   author: string;
-  team: string | null;
-  week: string | null;
   position: string | null;
   keywords: string[];
   createdTime: string;

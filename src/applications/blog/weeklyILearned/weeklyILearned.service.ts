@@ -13,18 +13,16 @@ import { Injectable } from "@nestjs/common";
 
 import { WeeklyILearnedMapper } from "@applications/blog/weeklyILearned/weeklyILearned.mapper";
 import { WeeklyILearnedPaginator } from "@applications/blog/weeklyILearned/weeklyILearned.paginator";
-import { WeeklyILearnedMarkdownConverter } from "@applications/blog/weeklyILearned/weeklyILearned.converter";
 @Injectable()
 export class WeeklyILearnedService {
   constructor(
     private readonly notionService: NotionService,
-    private readonly converter: WeeklyILearnedMarkdownConverter,
     private readonly mapper: WeeklyILearnedMapper,
     private readonly paginator: WeeklyILearnedPaginator
   ) {}
 
   private readonly WEEKLY_I_LEARNED_DATABASE_ID =
-    "1a11a845ed3e805c9a29de70277bdc1d";
+    "1c61a845ed3e802b8435c96614262b82";
 
   async getAllWeeklyILearned(startDate: string): Promise<WeeklyILearnedPage[]> {
     let allPages: WeeklyILearnedPage[] = [];
@@ -122,8 +120,7 @@ export class WeeklyILearnedService {
   async getWeeklyILearnedContent(
     pageId: string
   ): Promise<WeeklyILearnedContentResult> {
-    const { results } = await this.notionService.retrieveBlockChildren(pageId);
-    return this.converter.convertToContentResult(results);
+    return this.notionService.getPageContentAsMarkdown(pageId);
   }
 
   private createSortConfig(

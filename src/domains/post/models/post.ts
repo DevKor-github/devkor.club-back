@@ -19,7 +19,7 @@ export interface PostNewProps {
 export interface PostProps extends PostNewProps {
   viewCount: number;
   createdAt: Dayjs;
-  // NOTE: db 영속화 시 자동 수정되기에 굳이 조작할 필요 없음
+  // NOTE: db 영속화 시 자동 수정되기에 굳이 조작할 필요는 없음
   updatedAt: Dayjs;
   deletedAt: Dayjs | null;
 }

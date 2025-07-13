@@ -45,6 +45,7 @@
     "nestjs-pino": "^4.1.0",
     "node-cache": "^5.0.2",
     "nodemailer": "^6.3.0",
+    "notion-to-md": "^3.1.9",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",

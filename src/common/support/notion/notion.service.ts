@@ -11,6 +11,7 @@ import {
   NotionDatabaseService,
 } from "./notionDatabase.service";
 import { NotionPropertyFactory } from "./notionProperty.factory";
+import { NotionToMarkdown } from "notion-to-md";
 
 @Injectable()
 export class NotionService {
@@ -23,6 +24,54 @@ export class NotionService {
     private readonly blockFactory: NotionBlockFactory,
     private readonly databaseService: NotionDatabaseService
   ) {}
+
+  async getPageContentAsMarkdown(
+    pageId: string
+  ): Promise<{ content: string; coverImage: string | null }> {
+    const n2m = new NotionToMarkdown({
+      notionClient: this.notion,
+    });
+
+    n2m.setCustomTransformer("image", async (block: any) => {
+      const { id, image } = block;
+      if (!image) {
+        return "";
+      }
+
+      let imageUrl = "";
+      if (image.type === "external") {
+        imageUrl = image.external.url;
+      }
+
+      if (image.type === "file") {
+        const workspaceDomain = "devkor-official.notion.site";
+        const url = image.file.url.split("?")[0];
+        imageUrl = `https://${workspaceDomain}/image/${encodeURIComponent(
+          url
+        )}?table=block&id=${id}&cache=v2`;
+      }
+
+      if (imageUrl) {
+        return `![image](${imageUrl})`;
+      }
+      return "";
+    });
+
+    const mdBlocks = await n2m.pageToMarkdown(pageId);
+
+    let coverImage: string | null = null;
+    const firstImageBlock = mdBlocks.find((block) => block.type === "image");
+    if (firstImageBlock) {
+      const imageUrlMatch = firstImageBlock.parent.match(/\(([^)]+)\)/);
+      if (imageUrlMatch && imageUrlMatch[1]) {
+        coverImage = imageUrlMatch[1];
+      }
+    }
+
+    const content = n2m.toMarkdownString(mdBlocks).parent;
+
+    return { content, coverImage };
+  }
 
   async createPage(
     databaseId: string,
