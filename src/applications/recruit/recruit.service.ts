@@ -40,11 +40,15 @@ export class RecruitService {
     await this.client.post(this.allChannelPath, { content });
   }
 
+  // YYYY-1 or YYYY-2
+  private readonly applyHalfYear =
+    dayjs().format("YYYY") + (dayjs().month() < 6 ? "-1" : "-2");
+
   async sendSMS(to: string, content: string) {
     const body = {
       from: "01052196349",
       to,
-      subject: "[DevKor 2025-2 리크루팅 지원 완료 안내]",
+      subject: `[DevKor ${this.applyHalfYear} 리크루팅 지원 완료 안내]`,
       text: content,
       type: "LMS" as MessageType,
       autoTypeDetect: false,
