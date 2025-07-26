@@ -22,10 +22,28 @@ async function bootstrap() {
   app.useGlobalFilters(new InternalErrorFilter(), new HttpExceptionFilter());
   app.use(
     cors({
-      origin: ["http://localhost:5173", "https://devkor.club"],
-      // TODO: 배포 후 CORS 설정 변경
+      origin: (origin, callback) => {
+        const allowedOrigins = [
+          "http://localhost:5173",
+          "https://devkor.club",
+          "https://devkor-club-front.vercel.app",
+        ];
+        const vercelPreviewRegex =
+          /^https:\/\/devkor-club-front-git-[\w-]+\.vercel\.app$/;
+
+        if (
+          !origin ||
+          allowedOrigins.includes(origin) ||
+          vercelPreviewRegex.test(origin)
+        ) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      },
     })
   );
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

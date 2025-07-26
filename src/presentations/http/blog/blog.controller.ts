@@ -24,7 +24,7 @@ export class BlogController {
   @ApiDoc({
     summary: "게시물 페이지네이션 조회",
     description: "게시물 목록을 페이지네이션으로 조회합니다.",
-    successType: PostPageResponseModel,
+    successType: [PostResponseModel],
   })
   @Get("posts")
   async getPosts(
