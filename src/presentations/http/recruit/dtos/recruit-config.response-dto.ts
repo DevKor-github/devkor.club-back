@@ -5,13 +5,13 @@ export class RecruitPeriodDto {
     description: "시작 날짜 (ISO 8601 형식)",
     example: "2025-08-01T00:00:00.000Z",
   })
-  from: string;
+  start: string;
 
   @ApiProperty({
     description: "종료 날짜 (ISO 8601 형식)",
     example: "2025-08-14T23:59:59.999Z",
   })
-  to: string;
+  end: string;
 }
 
 export class RecruitConfigResponseDto {

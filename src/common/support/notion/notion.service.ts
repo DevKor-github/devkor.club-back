@@ -6,7 +6,12 @@ import {
   NotionDatabaseQueryResult,
 } from "@common/support/notion/notionDatabase.service";
 import { NotionPropertyFactory } from "@common/support/notion/notionProperty.factory";
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from "@nestjs/common";
 
 import {
   Client,
@@ -14,6 +19,7 @@ import {
   GetPageResponse,
   UpdatePageResponse,
 } from "@notionhq/client";
+import { Cache } from "cache-manager";
 
 import { NotionToMarkdown } from "notion-to-md";
 
@@ -27,7 +33,8 @@ export class NotionService {
     private readonly propertyFactory: NotionPropertyFactory,
     private readonly blockFactory: NotionBlockFactory,
     private readonly databaseService: NotionDatabaseService,
-    private readonly configManager: NotionConfigManager
+    private readonly configManager: NotionConfigManager,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
   async getPageContentAsMarkdown(
@@ -267,6 +274,12 @@ export class NotionService {
 
   // Config service facade methods
   async getConfig(): Promise<Config> {
+    const cachedConfig = await this.cacheManager.get<Config>("config");
+
+    if (cachedConfig) {
+      return cachedConfig;
+    }
+
     try {
       // Config 데이터베이스에서 첫 번째 페이지 가져오기
       const pages = await this.getAllPages(CONFIG_DATABASE_ID);
@@ -280,10 +293,13 @@ export class NotionService {
       const configPage = pages[0];
       const pageContent = await this.getPageContentAsMarkdown(configPage.id);
 
-      return this.configManager.parseConfigFromNotionPage(
+      const config = this.configManager.parseConfigFromNotionPage(
         configPage,
         pageContent.content
       );
+
+      await this.cacheManager.set("config", config, 60 * 60 * 1000);
+      return config;
     } catch (error) {
       console.error("Config 로딩 중 오류 발생:", error);
       throw new InternalServerErrorException(

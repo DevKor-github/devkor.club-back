@@ -8,7 +8,7 @@ export function deriveCompleteMessage(
   config: Config
 ) {
   const formatDate = (dateString: string) => {
-    return dayjs(dateString).format("M/D(ddd)");
+    return dayjs(dateString).tz("Asia/Seoul").format("M/D(ddd)");
   };
 
   return `안녕하세요, ${name}님! DevKor에 지원해주셔서 감사합니다.
@@ -16,12 +16,12 @@ ${type} 지원서가 성공적으로 제출되었습니다.
 
 앞으로의 DevKor 리크루팅 일정은 다음과 같습니다.
 
-- 서류 접수 기간 : ${formatDate(config.applicationPeriodFrom)} - ${formatDate(
-    config.applicationPeriodTo
+- 서류 접수 기간 : ${formatDate(config.applicationPeriod.start)} - ${formatDate(
+    config.applicationPeriod.end
   )}
 - 서류 합격자 발표 : ${formatDate(config.documentResultAnnouncement)}
-- 면접 심사 기간 : ${formatDate(config.interviewPeriodFrom)} - ${formatDate(
-    config.interviewPeriodTo
+- 면접 심사 기간 : ${formatDate(config.interviewPeriod.start)} - ${formatDate(
+    config.interviewPeriod.end
   )} (비대면 면접)
 - 최종 합격자 발표 : ${formatDate(config.finalResultAnnouncement)}
 

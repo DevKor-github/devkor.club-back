@@ -88,15 +88,9 @@ export class RecruitService {
     const config = await this.notionService.getConfig();
 
     return {
-      applicationPeriod: {
-        from: config.applicationPeriodFrom,
-        to: config.applicationPeriodTo,
-      },
+      applicationPeriod: config.applicationPeriod,
       documentResultAnnouncement: config.documentResultAnnouncement,
-      interviewPeriod: {
-        from: config.interviewPeriodFrom,
-        to: config.interviewPeriodTo,
-      },
+      interviewPeriod: config.interviewPeriod,
       finalResultAnnouncement: config.finalResultAnnouncement,
       isApplicationPeriodOpen:
         await this.notionService.isApplicationPeriodOpen(),
