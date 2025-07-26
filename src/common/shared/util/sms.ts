@@ -1,6 +1,6 @@
-import { type position } from "@common/shared/util/question";
+import { Position } from "@common/shared/enums/position.enum";
 
-export function deriveCompleteMessage(type: position, name: string) {
+export function deriveCompleteMessage(type: Position, name: string) {
   return `안녕하세요, ${name}님! DevKor에 지원해주셔서 감사합니다.
 ${type} 지원서가 성공적으로 제출되었습니다.
 

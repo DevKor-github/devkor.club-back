@@ -32,9 +32,9 @@ async function bootstrap() {
       exceptionFactory: (errors) => {
         const messages = errors
           .map((error) => {
-            return `<${error.property}> ${Object.values(error.constraints).join(
-              " "
-            )}`;
+            return `<${error.property}> ${Object.values(
+              error.constraints || {}
+            ).join(" ")}`;
           })
           .join(" ");
         return new NotAcceptableException(

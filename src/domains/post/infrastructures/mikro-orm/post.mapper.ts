@@ -19,7 +19,7 @@ export class PostMapper {
         updatedAt: dayjs(entity.updatedAt),
         deletedAt: entity.deletedAt ? dayjs(entity.deletedAt) : null,
       },
-      new PostId(entity.id),
+      new PostId(entity.id)
     );
 
     if (result.isFailure) {
@@ -41,7 +41,7 @@ export class PostMapper {
     entity.tags = domain.tags;
     entity.createdAt = domain.createdAt.toDate();
     entity.updatedAt = domain.updatedAt.toDate();
-    entity.deletedAt = domain.deletedAt?.toDate();
+    entity.deletedAt = domain.deletedAt?.toDate() ?? null;
     return entity;
   }
 }

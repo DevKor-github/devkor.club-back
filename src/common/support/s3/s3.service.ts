@@ -35,7 +35,7 @@ export class S3Service {
     */
   async createFileUploadPresignedUrl(fileName: string): Promise<string> {
     const extension = fileName.split(".").pop();
-    if (extension.toLowerCase() !== "pdf")
+    if (extension?.toLowerCase() !== "pdf")
       throw new NotAcceptableException("must be pdf");
 
     const albumBucketName = process.env.AWS_BUCKET_NAME; // S3의 버킷 이름

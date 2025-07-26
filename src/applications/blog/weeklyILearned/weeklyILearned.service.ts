@@ -141,7 +141,7 @@ export class WeeklyILearnedService {
     author?: string;
     startDate?: string;
   }) {
-    const filterConditions = [];
+    const filterConditions: any[] = [];
     if (filters.team)
       filterConditions.push(
         this.notionService.createSelectFilter("팀 이름", filters.team)
