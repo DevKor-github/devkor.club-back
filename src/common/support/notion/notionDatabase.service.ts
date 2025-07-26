@@ -1,4 +1,8 @@
-import { Injectable, Logger } from "@nestjs/common";
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from "@nestjs/common";
 import { Client } from "@notionhq/client";
 
 export interface NotionDatabaseQueryOptions {
@@ -177,7 +181,9 @@ export class NotionDatabaseService {
       };
     }
 
-    throw new Error(`Unsupported property type for value: ${value}`);
+    throw new InternalServerErrorException(
+      `Unsupported property type for value: ${value}`
+    );
   }
 
   createSortConfig(

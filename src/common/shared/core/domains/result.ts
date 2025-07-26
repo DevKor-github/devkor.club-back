@@ -1,3 +1,5 @@
+import { InternalServerErrorException } from "@nestjs/common";
+
 export class Result<T> {
   private readonly _value?: T;
   public readonly error?: string;
@@ -14,7 +16,7 @@ export class Result<T> {
 
   get value(): T {
     if (!this.isSuccess) {
-      throw new Error(this.error);
+      throw new InternalServerErrorException(this.error);
     }
     return this._value as T;
   }
@@ -40,7 +42,7 @@ export class Result<T> {
   }
 
   public static fail<U = never>(
-    error: string,
+    error: string
   ): Result<U> & {
     isSuccess: false;
     isFailure: true;

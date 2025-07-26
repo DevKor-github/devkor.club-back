@@ -1,16 +1,20 @@
-import { Injectable } from "@nestjs/common";
+import { Config, CONFIG_DATABASE_ID } from "@common/support/notion/config";
+import { NotionBlockFactory } from "@common/support/notion/notionBlock.factory";
+import { NotionConfigManager } from "@common/support/notion/notionConfig.manager";
+import {
+  NotionDatabaseService,
+  NotionDatabaseQueryResult,
+} from "@common/support/notion/notionDatabase.service";
+import { NotionPropertyFactory } from "@common/support/notion/notionProperty.factory";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
+
 import {
   Client,
   CreatePageResponse,
   GetPageResponse,
   UpdatePageResponse,
 } from "@notionhq/client";
-import { NotionBlockFactory } from "./notionBlock.factory";
-import {
-  NotionDatabaseQueryResult,
-  NotionDatabaseService,
-} from "./notionDatabase.service";
-import { NotionPropertyFactory } from "./notionProperty.factory";
+
 import { NotionToMarkdown } from "notion-to-md";
 
 @Injectable()
@@ -22,7 +26,8 @@ export class NotionService {
   constructor(
     private readonly propertyFactory: NotionPropertyFactory,
     private readonly blockFactory: NotionBlockFactory,
-    private readonly databaseService: NotionDatabaseService
+    private readonly databaseService: NotionDatabaseService,
+    private readonly configManager: NotionConfigManager
   ) {}
 
   async getPageContentAsMarkdown(
@@ -258,5 +263,47 @@ export class NotionService {
 
   createMultiSelectFilter(propertyName: string, value: string) {
     return this.databaseService.createMultiSelectFilter(propertyName, value);
+  }
+
+  // Config service facade methods
+  async getConfig(): Promise<Config> {
+    try {
+      // Config 데이터베이스에서 첫 번째 페이지 가져오기
+      const pages = await this.getAllPages(CONFIG_DATABASE_ID);
+
+      if (!pages || pages.length === 0) {
+        throw new InternalServerErrorException(
+          "Config 페이지를 찾을 수 없습니다."
+        );
+      }
+
+      const configPage = pages[0];
+      const pageContent = await this.getPageContentAsMarkdown(configPage.id);
+
+      return this.configManager.parseConfigFromNotionPage(
+        configPage,
+        pageContent.content
+      );
+    } catch (error) {
+      console.error("Config 로딩 중 오류 발생:", error);
+      throw new InternalServerErrorException(
+        `설정을 로드할 수 없습니다: ${error.message}`
+      );
+    }
+  }
+
+  async getQuestionsByPosition(position: string): Promise<string[]> {
+    const config = await this.getConfig();
+    return this.configManager.getQuestionsByPosition(config, position);
+  }
+
+  async isApplicationPeriodOpen(): Promise<boolean> {
+    const config = await this.getConfig();
+    return this.configManager.isApplicationPeriodOpen(config);
+  }
+
+  async isInterviewPeriodOpen(): Promise<boolean> {
+    const config = await this.getConfig();
+    return this.configManager.isInterviewPeriodOpen(config);
   }
 }

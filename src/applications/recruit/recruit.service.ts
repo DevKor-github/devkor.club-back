@@ -1,7 +1,7 @@
 import { Position } from "@common/shared/enums/position.enum";
-import { deriveCompleteMessage } from "@common/shared/util/sms";
+import { deriveCompleteMessage } from "@applications/recruit/sms";
 import { NotionService } from "@common/support/notion/notion.service";
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { ApplyDto } from "@presentations/http/recruit/dtos/apply.dto";
 
 import axios from "axios";
@@ -58,6 +58,13 @@ export class RecruitService {
   }
 
   async apply(dto: ApplyDto) {
+    // 지원 기간 확인
+    const isApplicationPeriodOpen =
+      await this.notionService.isApplicationPeriodOpen();
+    if (!isApplicationPeriodOpen) {
+      throw new BadRequestException("지원 기간이 아닙니다.");
+    }
+
     const result = await this.saveRecruitAnswer(dto.position, dto);
 
     this.notificationToChannel(
@@ -68,8 +75,37 @@ export class RecruitService {
         ""
       )}`
     );
-    const message = deriveCompleteMessage(dto.position, dto.name);
+    const config = await this.notionService.getConfig();
+    const message = deriveCompleteMessage(dto.position, dto.name, config);
     this.sendSMS(dto.phone.split("-").join(""), message);
+  }
+
+  async getApplicationPeriod(): Promise<boolean> {
+    return await this.notionService.isApplicationPeriodOpen();
+  }
+
+  async getRecruitConfig() {
+    const config = await this.notionService.getConfig();
+
+    return {
+      applicationPeriod: {
+        from: config.applicationPeriodFrom,
+        to: config.applicationPeriodTo,
+      },
+      documentResultAnnouncement: config.documentResultAnnouncement,
+      interviewPeriod: {
+        from: config.interviewPeriodFrom,
+        to: config.interviewPeriodTo,
+      },
+      finalResultAnnouncement: config.finalResultAnnouncement,
+      isApplicationPeriodOpen:
+        await this.notionService.isApplicationPeriodOpen(),
+      isInterviewPeriodOpen: await this.notionService.isInterviewPeriodOpen(),
+    };
+  }
+
+  async getQuestionsByPosition(position: Position): Promise<string[]> {
+    return await this.notionService.getQuestionsByPosition(position);
   }
 
   private async saveRecruitAnswer(type: Position, dto: ApplyDto) {
