@@ -15,6 +15,7 @@ export class PostMapper {
         coverImageUrl: entity.coverImageUrl,
         viewCount: entity.viewCount,
         tags: entity.tags,
+        token: entity.token,
         createdAt: dayjs(entity.createdAt),
         updatedAt: dayjs(entity.updatedAt),
         deletedAt: entity.deletedAt ? dayjs(entity.deletedAt) : null,
@@ -39,6 +40,7 @@ export class PostMapper {
     entity.coverImageUrl = domain.coverImageUrl;
     entity.viewCount = domain.viewCount;
     entity.tags = domain.tags;
+    entity.token = domain.token;
     entity.createdAt = domain.createdAt.toDate();
     entity.updatedAt = domain.updatedAt.toDate();
     entity.deletedAt = domain.deletedAt?.toDate() ?? null;

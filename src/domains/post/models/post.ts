@@ -11,6 +11,7 @@ export interface PostNewProps {
   position: Position;
   coverImageUrl: string | null;
   tags: string[];
+  token: string | null;
   content: string;
   createdAt?: Dayjs;
   updatedAt?: Dayjs;
@@ -85,6 +86,11 @@ export class Post extends AggregateRoot<PostProps> {
     return this.validate();
   }
 
+  public updateToken(token: string | null): Result<Post> {
+    this.props.token = token;
+    return this.validate();
+  }
+
   public updateTitle(title: string): Result<Post> {
     this.props.title = title;
     return this.validate();
@@ -125,6 +131,10 @@ export class Post extends AggregateRoot<PostProps> {
 
   get content(): string {
     return this.props.content;
+  }
+
+  get token(): string | null {
+    return this.props.token;
   }
 
   get author(): string {

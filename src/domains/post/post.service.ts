@@ -44,6 +44,7 @@ export class PostService {
       tags: string[];
       coverImageUrl: string | null;
       createdAt: Dayjs;
+      token: string | null;
     }
   ): Promise<PostInfo> {
     const post = await this.postReader.findById(id);
@@ -57,6 +58,7 @@ export class PostService {
       post.overwriteTags(props.tags),
       post.updateCoverImageUrl(props.coverImageUrl),
       post.reviseCreatedAt(props.createdAt),
+      post.updateToken(props.token),
     ];
     if (Result.getFailResultIfExist(results)) {
       throw new BadRequestException(

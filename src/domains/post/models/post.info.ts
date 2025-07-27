@@ -15,6 +15,7 @@ export class PostInfo {
     public readonly viewCount: number,
     public readonly createdAt: Dayjs,
     public readonly updatedAt: Dayjs,
+    public readonly token: string | null
   ) {}
 
   static from(post: Post): PostInfo {
@@ -29,6 +30,7 @@ export class PostInfo {
       post.viewCount,
       post.createdAt,
       post.updatedAt,
+      post.token
     );
   }
 }

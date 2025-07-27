@@ -18,6 +18,9 @@ export class PostEntity {
   @Property({ type: "text" })
   content: string;
 
+  @Property({ nullable: true })
+  token: string | null;
+
   @Property()
   author: string;
 

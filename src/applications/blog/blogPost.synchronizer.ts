@@ -34,6 +34,7 @@ export class BlogPostSynchronizer {
             tags: weekly.keywords,
             coverImageUrl: coverImage,
             createdAt: dayjs(weekly.createdTime).tz("Asia/Seoul"),
+            token: weekly.id,
           });
         }
         return this.postService.create({
@@ -45,6 +46,7 @@ export class BlogPostSynchronizer {
           createdAt: dayjs(weekly.createdTime).tz("Asia/Seoul"),
           updatedAt: dayjs(weekly.lastEditedTime).tz("Asia/Seoul"),
           coverImageUrl: coverImage,
+          token: weekly.id,
         });
       } catch (error) {
         // Position 변환, 게시글 생성, 업데이트 실패시 값 무시

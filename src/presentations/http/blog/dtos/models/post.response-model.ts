@@ -68,6 +68,13 @@ export class PostResponseModel {
   })
   updatedAt: string;
 
+  @ApiProperty({
+    description: "포스트 토큰(대체키)",
+    example: "assd-fr-1234567890",
+    nullable: true,
+  })
+  token: string | null;
+
   constructor(
     id: string,
     title: string,
@@ -79,6 +86,7 @@ export class PostResponseModel {
     viewCount: number,
     createdAt: string,
     updatedAt: string,
+    token: string | null
   ) {
     this.id = id;
     this.title = title;
@@ -90,6 +98,7 @@ export class PostResponseModel {
     this.viewCount = viewCount;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.token = token;
   }
 
   static fromPostInfo(postInfo: PostInfo): PostResponseModel {
@@ -104,12 +113,13 @@ export class PostResponseModel {
       postInfo.viewCount,
       postInfo.createdAt.toISOString(),
       postInfo.updatedAt.toISOString(),
+      postInfo.token
     );
   }
 
   static fromPostInfoList(postInfoList: PostInfo[]): PostResponseModel[] {
     return postInfoList.map((postInfo) =>
-      PostResponseModel.fromPostInfo(postInfo),
+      PostResponseModel.fromPostInfo(postInfo)
     );
   }
 }

@@ -24,6 +24,7 @@ async function bootstrap() {
     cors({
       origin: (origin, callback) => {
         const allowedOrigins = [
+          "http://localhost:3071",
           "http://localhost:5173",
           "https://devkor.club",
           "https://devkor-club-front.vercel.app",
