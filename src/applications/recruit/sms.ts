@@ -20,8 +20,8 @@ ${type} 지원서가 성공적으로 제출되었습니다.
     config.applicationPeriod.end
   )}
 - 서류 합격자 발표 : ${formatDate(config.documentResultAnnouncement)}
-- 면접 심사 기간 : ${formatDate(config.interviewPeriod.start)} - ${formatDate(
-    config.interviewPeriod.end
+- 면접 심사 기간 : ${formatDate(config.interview.start)} - ${formatDate(
+    config.interview.end
   )} (비대면 면접)
 - 최종 합격자 발표 : ${formatDate(config.finalResultAnnouncement)}
 

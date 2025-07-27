@@ -18,6 +18,7 @@ export class NotionConfigManager {
 
       this.parseNotionProperties(configPage.properties, config);
       this.parseQuestionsFromContent(pageContent, config);
+      this.parseInterviewTimesFromContent(pageContent, config);
       this.validateRequiredProperties(config);
 
       return config as Config;
@@ -60,8 +61,8 @@ export class NotionConfigManager {
   /**
    * 면접 기간 확인
    */
-  isInterviewPeriodOpen(config: Config): boolean {
-    return this.isPeriodOpen(config.interviewPeriod);
+  isInterviewOpen(config: Config): boolean {
+    return this.isPeriodOpen(config.interview);
   }
 
   // Private Methods
@@ -114,12 +115,18 @@ export class NotionConfigManager {
     if (!property.date) return;
 
     if (this.isDateRangeProperty(englishKey)) {
-      config[englishKey as keyof Config] = {
+      const value = {
         start: convertToISOString(property.date.start),
         end: convertToEndOfDayISOString(
           property.date.end || property.date.start
         ),
-      } as any;
+      };
+
+      if (englishKey === "interview") {
+        config.interview = { ...value, timeSlots: [] };
+      } else {
+        config[englishKey as "applicationPeriod"] = value;
+      }
     } else {
       config[englishKey as keyof Config] = convertToISOString(
         property.date.start
@@ -156,6 +163,64 @@ export class NotionConfigManager {
     config[englishKey as keyof Config] = property.multi_select.map(
       (item: any) => item.name
     ) as any;
+  }
+
+  private parseInterviewTimesFromContent(
+    pageContent: string,
+    config: Partial<Config>
+  ): void {
+    const lines = pageContent.split("\n");
+    let isInsideBlock = false;
+    let jsonBlockContent = "";
+
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+
+      if (trimmedLine.includes("<면접 시간>")) {
+        isInsideBlock = true;
+        continue;
+      }
+
+      if (trimmedLine.includes("</면접 시간>")) {
+        isInsideBlock = false;
+        break; // End of block
+      }
+
+      if (isInsideBlock) {
+        jsonBlockContent += `${line}\n`;
+      }
+    }
+
+    if (jsonBlockContent) {
+      const jsonMatch = jsonBlockContent.match(/```json\s*([\s\S]*?)\s*```/);
+      if (jsonMatch && jsonMatch[1]) {
+        try {
+          const interviewTimes: { date: string; times: string[] }[] =
+            JSON.parse(jsonMatch[1]);
+          if (config.interview) {
+            config.interview.timeSlots = interviewTimes.flatMap(
+              ({ date, times }) =>
+                times.map((time) => {
+                  const [hour, minute] = time.split(":").map(Number);
+                  return dayjs
+                    .tz(date.replace(/\./g, "-"), "Asia/Seoul")
+                    .hour(hour)
+                    .minute(minute)
+                    .second(0)
+                    .millisecond(0)
+                    .utc()
+                    .toISOString();
+                })
+            );
+          }
+        } catch (error) {
+          console.error("면접 시간 JSON 파싱 중 오류 발생:", error);
+          throw new InternalServerErrorException(
+            "면접 시간 정보를 파싱할 수 없습니다."
+          );
+        }
+      }
+    }
   }
 
   private parseQuestionsFromContent(
@@ -213,9 +278,7 @@ export class NotionConfigManager {
   // Utility Methods
 
   private isDateRangeProperty(englishKey: string): boolean {
-    return (
-      englishKey === "applicationPeriod" || englishKey === "interviewPeriod"
-    );
+    return englishKey === "applicationPeriod" || englishKey === "interview";
   }
 
   private handleMissingProperty(koreanKey: string): void {

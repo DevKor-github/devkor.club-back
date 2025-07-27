@@ -320,6 +320,6 @@ export class NotionService {
 
   async isInterviewPeriodOpen(): Promise<boolean> {
     const config = await this.getConfig();
-    return this.configManager.isInterviewPeriodOpen(config);
+    return this.configManager.isInterviewOpen(config);
   }
 }

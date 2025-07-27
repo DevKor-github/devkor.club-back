@@ -14,6 +14,26 @@ export class RecruitPeriodDto {
   end: string;
 }
 
+export class InterviewDto {
+  @ApiProperty({
+    description: "면접 시작 날짜 (ISO 8601 형식)",
+    example: "2025-08-01T00:00:00.000Z",
+  })
+  start: string;
+
+  @ApiProperty({
+    description: "면접 종료 날짜 (ISO 8601 형식)",
+    example: "2025-08-14T23:59:59.999Z",
+  })
+  end: string;
+
+  @ApiProperty({
+    description: "면접 시간 목록",
+    example: ["10:00", "11:00", "12:00"],
+  })
+  timeSlots: string[];
+}
+
 export class RecruitConfigResponseDto {
   @ApiProperty({
     description: "지원 기간",
@@ -29,9 +49,9 @@ export class RecruitConfigResponseDto {
 
   @ApiProperty({
     description: "면접 기간",
-    type: RecruitPeriodDto,
+    type: InterviewDto,
   })
-  interviewPeriod: RecruitPeriodDto;
+  interview: InterviewDto;
 
   @ApiProperty({
     description: "최종 합격자 발표 날짜 (ISO 8601 형식)",

@@ -8,9 +8,10 @@ export const CONFIG_SCHEMA = z.object({
     end: z.string(),
   }),
   documentResultAnnouncement: z.string(),
-  interviewPeriod: z.object({
+  interview: z.object({
     start: z.string(),
     end: z.string(),
+    timeSlots: z.string().array(),
   }),
   finalResultAnnouncement: z.string(),
   feQuestions: z.string().array(),
@@ -24,7 +25,7 @@ export type Config = z.infer<typeof CONFIG_SCHEMA>;
 // Notion 데이터베이스의 원본 한국어 속성명과 매핑
 export const CONFIG_PROPERTY_MAPPING = {
   applicationPeriod: "서류접수기간",
-  interviewPeriod: "면접심사기간",
+  interview: "면접심사기간",
   documentResultAnnouncement: "서류합격자발표",
   finalResultAnnouncement: "최종합격자발표",
   feQuestions: "FE 질문",

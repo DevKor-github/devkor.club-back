@@ -90,7 +90,7 @@ export class RecruitService {
     return {
       applicationPeriod: config.applicationPeriod,
       documentResultAnnouncement: config.documentResultAnnouncement,
-      interviewPeriod: config.interviewPeriod,
+      interview: config.interview,
       finalResultAnnouncement: config.finalResultAnnouncement,
       isApplicationPeriodOpen:
         await this.notionService.isApplicationPeriodOpen(),
