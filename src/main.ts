@@ -27,6 +27,7 @@ async function bootstrap() {
           "http://localhost:3071",
           "http://localhost:5173",
           "https://devkor.club",
+          "https://api.devkor.club",
           "https://devkor-club-front.vercel.app",
         ];
         const vercelPreviewRegex =
