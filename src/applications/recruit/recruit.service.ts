@@ -112,7 +112,7 @@ export class RecruitService {
       학번: this.notionService.createTextProperty(dto.studentId),
       "면접 일정": this.notionService.createMultiSelectProperty(
         dto.interviewTime.map((time) =>
-          dayjs.tz(time, "Asia/Seoul").format("YYYY-MM-DD HH:mm")
+          dayjs(time).tz("Asia/Seoul").format("YYYY-MM-DD HH:mm")
         )
       ),
     };
