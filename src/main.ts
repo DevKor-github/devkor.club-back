@@ -40,7 +40,7 @@ async function bootstrap() {
         ) {
           callback(null, true);
         } else {
-          callback(new Error("Not allowed by CORS"));
+          callback(new NotAcceptableException("Not allowed by CORS"));
         }
       },
     })

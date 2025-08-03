@@ -40,6 +40,26 @@ export class RecruitService {
     await this.client.post(this.allChannelPath, { content });
   }
 
+  private calculateCurrentGeneration(): string {
+    const now = dayjs();
+    const currentYear = now.year();
+    const currentMonth = now.month(); // 0-11 for Jan-Dec
+
+    // Base: 1st generation was in the first half of 2020.
+    const baseGeneration = 1;
+    const baseYear = 2020;
+
+    const yearDifference = currentYear - baseYear;
+    const generationOffsetFromYears = yearDifference * 2;
+
+    // Add 1 if the current period is in the second half of the year (July-Dec, month 6-11)
+    const generationOffsetFromHalf = currentMonth >= 6 ? 1 : 0;
+
+    const currentGeneration =
+      baseGeneration + generationOffsetFromYears + generationOffsetFromHalf;
+    return `${currentGeneration}기`;
+  }
+
   // YYYY-1 or YYYY-2
   private readonly applyHalfYear =
     dayjs().format("YYYY") + (dayjs().month() < 6 ? "-1" : "-2");
@@ -94,7 +114,7 @@ export class RecruitService {
       finalResultAnnouncement: config.finalResultAnnouncement,
       isApplicationPeriodOpen:
         await this.notionService.isApplicationPeriodOpen(),
-      isInterviewPeriodOpen: await this.notionService.isInterviewPeriodOpen(),
+      isInterviewPeriodOpen: await this.notionService.isInterviewOpen(),
     };
   }
 
@@ -110,6 +130,10 @@ export class RecruitService {
       "휴대폰 번호": this.notionService.createPhoneNumberProperty(dto.phone),
       학과: this.notionService.createTextProperty(dto.major),
       학번: this.notionService.createTextProperty(dto.studentId),
+      기수: this.notionService.createSelectProperty(
+        this.calculateCurrentGeneration()
+      ),
+      직군: this.notionService.createSelectProperty(dto.position),
       "면접 일정": this.notionService.createMultiSelectProperty(
         dto.interviewTime.map((time) =>
           dayjs(time).tz("Asia/Seoul").format("YYYY-MM-DD HH:mm")
